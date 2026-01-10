@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* --- THEME VARIABLES --- */
+:root {
+  /* Default (Light) Mode */
+  --bg-app: #f7fafc;
+  --bg-card: #ffffff;
+  --bg-sidebar: #ffffff;
+  --text-main: #1a202c;
+  --text-secondary: #718096;
+  --border-color: #e2e8f0;
+  --primary: #667eea;
+  --hover-bg: #f7fafc;
+  --input-bg: #ffffff;
+  --sidebar-width: 280px;
+}
+
+/* Dark Mode Overrides */
+[data-theme='dark'] {
+  --bg-app: #171923;      /* Very dark gray */
+  --bg-card: #2d3748;     /* Dark gray cards */
+  --bg-sidebar: #2d3748;
+  --text-main: #f7fafc;   /* White text */
+  --text-secondary: #a0aec0;
+  --border-color: #4a5568;
+  --primary: #7f9cf5;     /* Lighter purple for visibility */
+  --hover-bg: #4a5568;
+  --input-bg: #2d3748;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* --- LAYOUT UTILITIES --- */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border-color);
+  position: fixed;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  overflow-y: auto;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 32px;
+  width: calc(100% - var(--sidebar-width));
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+.mobile-toggle {
+  display: none;
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
+  padding: 10px;
+  background: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main-content { margin-left: 0; width: 100%; padding: 20px; padding-top: 80px; }
+  .mobile-toggle { display: flex; }
+}
