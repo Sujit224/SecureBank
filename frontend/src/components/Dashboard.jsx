@@ -46,8 +46,8 @@ const Sidebar = ({ activeView, setActiveView, role, isOpen, toggleSidebar }) => 
   const userMenuItems = [
     { id: 'home', label: 'Home', icon: Home },
     { id: 'profile', label: 'Profile', icon: User },
-    { id: 'transactions', label: 'History', icon: CreditCard },
-    { id: 'transfer', label: 'Transfer', icon: Send }
+    { id: 'transactions', label: 'Transaction History', icon: CreditCard },
+    { id: 'transfer', label: 'Transfer Funds', icon: Send }
   ];
 
   const adminMenuItems = [
@@ -185,7 +185,7 @@ const UserTransactions = () => {
     
     return (
         <div>
-            <h1 style={{ fontSize: '28px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '24px' }}>History</h1>
+            <h1 style={{ fontSize: '28px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '24px' }}>Transaction History</h1>
             <div style={{ ...styles.card, padding: 0, overflowX: 'auto' }}>
                 <table style={{ width: '100%', minWidth: '800px', borderCollapse: 'collapse' }}>
                     <thead style={styles.tableHeader}>
