@@ -1,9 +1,9 @@
 from fastapi import Depends,HTTPException,status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt # pyright: ignore[reportMissingModuleSource]
-from requests import Session, session 
-from Backend.app import database_models
-from app.database import users_db
+from sqlalchemy.orm import Session
+from app import database_models
+from app.database import get_db
 import os
 
 
@@ -12,12 +12,6 @@ ALGORITHM = os.getenv("ALGORITHM")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="authh/login")
 
-def get_db():
-    db = session()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 async def get_current_user(db: Session=Depends(get_db),token: str = Depends(oauth2_scheme)):
@@ -29,6 +23,7 @@ async def get_current_user(db: Session=Depends(get_db),token: str = Depends(oaut
 
     try:
         payload = jwt.decode(token,SECRET_KEY,algorithms=[ALGORITHM])
+        print(payload)
         username:str = payload.get("sub")
         role: str = payload.get("role")
         if username is None:
@@ -36,7 +31,7 @@ async def get_current_user(db: Session=Depends(get_db),token: str = Depends(oaut
     except JWTError:
         raise credentials_exception
     
-    user = db.query(database_models.User).filter(database_models.User.email == payload.get("sub")).first()
+    user = db.query(database_models.User).filter(database_models.User.username == payload.get("sub")).first()
 
     if not user:
         raise credentials_exception

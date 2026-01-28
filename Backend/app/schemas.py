@@ -15,8 +15,7 @@ class UserCreate(BaseModel):
     gender: str = Field(...,description="Male,Female,Other")
     marital_status:str = Field(...,description="Single,Married,etc.")
     dob: date
-
-    income_range = Literal[
+    income_range: Literal[
         "0-5 LPA",
         "5-10 LPA",
         "10-20 LPA",

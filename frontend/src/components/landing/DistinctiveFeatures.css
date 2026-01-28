@@ -1,0 +1,187 @@
+.distinctive-section {
+    padding: 100px 0;
+    background-color: #fff;
+}
+
+.distinctive-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media (min-width: 992px) {
+    .distinctive-container {
+        flex-direction: row;
+        gap: 60px;
+    }
+}
+
+.distinctive-content {
+    flex: 1;
+}
+
+.text-purple {
+    color: var(--color-purple);
+}
+
+.toggle-pill {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-dark);
+    border-radius: 50px;
+    padding: 4px 12px;
+    font-size: 14px;
+    margin: 0 8px;
+    vertical-align: middle;
+}
+
+.toggle-dot {
+    width: 12px;
+    height: 12px;
+    background-color: var(--color-dark);
+    border-radius: 50%;
+    margin-left: 8px;
+}
+
+.features-list {
+    display: flex;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.list-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.feature-number {
+    width: 32px;
+    height: 32px;
+    background-color: var(--color-accent);
+    /* Lime green */
+    color: var(--color-dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    font-family: var(--font-display);
+}
+
+.feature-label {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.distinctive-visual {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+}
+
+.circular-graphic {
+    width: 360px;
+    height: 360px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.center-circle {
+    width: 100px;
+    height: 100px;
+    background-color: #000;
+    border-radius: 50%;
+    position: relative;
+    z-index: 5;
+    overflow: hidden;
+}
+
+.mini-dots {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    background-image: radial-gradient(var(--color-accent) 20%, transparent 20%);
+    background-size: 8px 8px;
+    border-radius: 50%;
+}
+
+.mini-dots.inverted {
+    top: auto;
+    bottom: 15px;
+    left: auto;
+    right: 15px;
+    background-image: radial-gradient(var(--color-purple) 20%, transparent 20%);
+}
+
+.orbital-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-dark);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    margin-top: -3px;
+    margin-left: -3px;
+}
+
+.connector-line {
+    position: absolute;
+    height: 1px;
+    background-color: #ccc;
+    transform-origin: left center;
+    top: 50%;
+    left: 50%;
+}
+
+.line-1 {
+    width: 180px;
+    transform: rotate(-30deg);
+    border-top: 1px dashed #000;
+    background: none;
+}
+
+.line-2 {
+    width: 160px;
+    transform: rotate(20deg);
+    border-top: 1px dashed #000;
+    background: none;
+}
+
+.connector-dot {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    margin-top: -6px;
+    margin-left: -6px;
+    z-index: 4;
+}
+
+.dot-1 {
+    background-color: #000;
+    transform: rotate(-30deg) translateX(180px);
+}
+
+.dot-2 {
+    background-color: var(--color-accent);
+    transform: rotate(20deg) translateX(160px);
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px #000;
+}

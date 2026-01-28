@@ -2,13 +2,15 @@ from datetime import datetime
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
-from requests import Session
-from Backend.app import database_models, schemas
-from Backend.app.auth.dependencies import get_db
-from utils import create_access_token, get_password_hash,generate_account_number, verify_password
+from sqlalchemy.orm import Session
+from app import database_models, schemas
+from app.auth.dependencies import get_current_user, get_db
+from app.auth.utils import create_access_token, get_password_hash,generate_account_number, verify_password
+from fastapi.security import OAuth2PasswordBearer
+
 
 router = APIRouter(prefix="/auth",tags=["Autenciation"])
-
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 @router.post("/signup",response_model=schemas.UserResponse)
 def signup(user: schemas.UserCreate,db:Session = Depends(get_db)):
@@ -28,7 +30,8 @@ def signup(user: schemas.UserCreate,db:Session = Depends(get_db)):
         email = user.email,
         password = hashed_pwd,
         role = user.role,
-        account_number=acct_no,balance = 0.0,
+        account_number=acct_no,
+        balance = 0.0,
         created_at = datetime.now(),
         mobile_number = user.mobile_number,
         age = user.age,
@@ -59,4 +62,8 @@ def login(form_data:Annotated[OAuth2PasswordRequestForm,Depends()], db: Session 
     access_token = create_access_token(data={"sub":db_user.username,"role":db_user.role})
 
     return {"access_token":access_token,"token_type":"bearer"}
+
     
+
+
+

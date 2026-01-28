@@ -6,6 +6,14 @@ from urllib.parse import quote_plus
 
 load_dotenv()
 
+def get_db():
+    db = session()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = quote_plus(os.getenv("DB_PASSWORD"))
 DB_HOST = os.getenv("DB_HOST")

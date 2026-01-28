@@ -7,3 +7,4 @@ passlib[argon2]
 pydantic[email]
 python-jose[cryptography]
 python-multipart
+bcrypt

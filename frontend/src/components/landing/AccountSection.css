@@ -1,0 +1,159 @@
+.account-section {
+    padding: 100px 0;
+    background-color: var(--color-bg);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mb-16 {
+    margin-bottom: 64px;
+}
+
+.account-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+
+@media (min-width: 992px) {
+    .account-cards {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.account-card {
+    background-color: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: 24px;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    min-height: 400px;
+}
+
+.account-card:hover {
+    border-color: transparent;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+.card-heading {
+    font-size: 20px;
+    margin-bottom: 16px;
+}
+
+.card-txt {
+    font-family: var(--font-body);
+    color: var(--color-text-light);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+.visual-graphic {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
+}
+
+/* Graph 1: Hex Grid */
+.hex-grid {
+    display: flex;
+    flex-wrap: wrap;
+    width: 120px;
+    justify-content: center;
+    gap: 4px;
+}
+
+.hex {
+    width: 30px;
+    height: 34px;
+    background-color: var(--color-purple);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    opacity: 0.2;
+}
+
+.hex:nth-child(2),
+.hex:nth-child(5) {
+    background-color: var(--color-accent);
+    opacity: 1;
+}
+
+/* Graph 2: Connection */
+.connection-flow {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+}
+
+.node {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--color-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd;
+}
+
+.line {
+    width: 30px;
+    height: 1px;
+    background-color: #aaa;
+}
+
+.node.medium {
+    width: 20px;
+    height: 20px;
+}
+
+.card-rect {
+    width: 60px;
+    height: 40px;
+    background: var(--color-accent);
+    border-radius: 4px;
+    position: relative;
+}
+
+.chip-mini {
+    width: 10px;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 8px;
+    left: 8px;
+}
+
+/* Graph 3: Data Bars */
+.data-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 80%;
+}
+
+.bar {
+    height: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.bar:nth-child(2) {
+    width: 70%;
+    background-color: #e0e0e0;
+}
+
+.bar:nth-child(3) {
+    width: 90%;
+    background-color: var(--color-purple);
+    opacity: 0.3;
+}

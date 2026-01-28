@@ -1,25 +1,46 @@
+// src/App.jsx
 import React from 'react';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import LoginPage from './components/LoginPage';
-import Dashboard from './components/Dashboard';
-import { styles } from './styles/theme';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext'; // This import will work now!
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import UserDashboard from './pages/UserDashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 
-const Main = () => {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return <div style={styles.container}>Loading SecureBank...</div>;
-  }
-
-  return user ? <Dashboard /> : <LoginPage />;
-};
-
-const App = () => {
+function App() {
   return (
     <AuthProvider>
-      <Main />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          
+          <Route 
+            path="/user-dashboard" 
+            element={
+              <ProtectedRoute allowedRole="user">
+                <UserDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/admin-dashboard" 
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </BrowserRouter>
     </AuthProvider>
   );
-};
+}
 
 export default App;
