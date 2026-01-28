@@ -94,6 +94,23 @@
     }
 }
 
+.nav-auth {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--color-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+}
+
 .search-btn {
     padding: 8px;
     border-radius: 50%;

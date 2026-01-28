@@ -9,7 +9,7 @@ from app.auth.utils import create_access_token, get_password_hash,generate_accou
 from fastapi.security import OAuth2PasswordBearer
 
 
-router = APIRouter(prefix="/auth",tags=["Autenciation"])
+router = APIRouter(prefix="/auth",tags=["Authentication"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 @router.post("/signup",response_model=schemas.UserResponse)

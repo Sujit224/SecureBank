@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
 import API from '../api/axios';
-import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
+import { useNavigate, Link } from 'react-router-dom';
+import Navbar from '../components/landing/Navbar'; // Correct Navbar path
+import './Signup.css';
 
 const Signup = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '', email: '', password: '',
-    mobile_number: '', age: '', profession: '',
-    gender: 'Male', marital_status: 'Single',
-    dob: '', income_range: '0-5 LPA',
+    username: '', 
+    email: '', 
+    password: '',
+    mobile_number: '', 
+    age: '', 
+    profession: '',
+    gender: 'Male', 
+    marital_status: 'Single', // Default value
+    dob: '', 
+    income_range: '0-5 LPA',
     role: 'user'
   });
 
@@ -19,6 +26,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       const res = await API.post('/auth/signup', formData);
+      // Optional: You might want to show a modal instead of alert
       alert(`Welcome! Your Account Number is: ${res.data.account_number}`);
       navigate('/login');
     } catch (error) {
@@ -29,45 +37,93 @@ const Signup = () => {
   return (
     <>
       <Navbar />
-      <div className="auth-container">
-        <div className="auth-card" style={{ maxWidth: '800px' }}> {/* Wider for grid */}
-          <h2 className="auth-title">Create Account</h2>
-          <p className="auth-subtitle">Join the future of banking today.</p>
+      <div className="signup-page">
+        <div className="signup-card">
+          <h2 className="signup-title">Create Account</h2>
+          <p className="signup-subtitle">Join the future of banking today.</p>
           
-          <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', textAlign: 'left' }}>
+          <form onSubmit={handleSubmit} className="signup-form">
             
             {/* Section 1: Identity */}
-            <div style={{ gridColumn: 'span 2' }}>
-              <h4 style={{ color: 'var(--accent-yellow)', marginBottom: '10px' }}>Identity</h4>
-            </div>
-            <input name="username" className="input-field" placeholder="Username" onChange={handleChange} required />
-            <input name="email" type="email" className="input-field" placeholder="Email" onChange={handleChange} required />
-            <input name="password" type="password" className="input-field" placeholder="Password" onChange={handleChange} required />
-            <input name="mobile_number" className="input-field" placeholder="Mobile Number" onChange={handleChange} required />
-
-            {/* Section 2: Profile */}
-            <div style={{ gridColumn: 'span 2', marginTop: '10px' }}>
-              <h4 style={{ color: 'var(--accent-purple)', marginBottom: '10px' }}>Profile</h4>
-            </div>
-            <input name="age" type="number" className="input-field" placeholder="Age" onChange={handleChange} required />
-            <input name="profession" className="input-field" placeholder="Profession" onChange={handleChange} required />
+            <div className="form-section-title">Identity Details</div>
             
-            <select name="gender" className="input-field" onChange={handleChange}>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
-            <select name="income_range" className="input-field" onChange={handleChange}>
-              <option value="0-5 LPA">0-5 LPA</option>
-              <option value="5-10 LPA">5-10 LPA</option>
-              <option value="10-20 LPA">10-20 LPA</option>
-              <option value="30+ LPA">30+ LPA</option>
-            </select>
-            
-            <input name="dob" type="date" className="input-field" onChange={handleChange} style={{ gridColumn: 'span 2' }} required />
+            <div className="input-group">
+                <label>Username</label>
+                <input name="username" className="input-field" placeholder="Choose a username" onChange={handleChange} required />
+            </div>
 
-            <button type="submit" className="btn btn-primary" style={{ gridColumn: 'span 2', marginTop: '16px' }}>
+            <div className="input-group">
+                <label>Email</label>
+                <input name="email" type="email" className="input-field" placeholder="email@example.com" onChange={handleChange} required />
+            </div>
+            
+            <div className="input-group">
+                <label>Password</label>
+                <input name="password" type="password" className="input-field" placeholder="Create a strong password" onChange={handleChange} required />
+            </div>
+
+            <div className="input-group">
+                <label>Mobile Number</label>
+                <input name="mobile_number" className="input-field" placeholder="10-digit number" onChange={handleChange} required />
+            </div>
+
+            {/* Section 2: Personal Profile */}
+            <div className="form-section-title">Personal Profile</div>
+            
+            <div className="input-group">
+                <label>Age</label>
+                <input name="age" type="number" className="input-field" placeholder="e.g. 25" onChange={handleChange} required />
+            </div>
+
+            <div className="input-group">
+                <label>Profession</label>
+                <input name="profession" className="input-field" placeholder="e.g. Engineer" onChange={handleChange} required />
+            </div>
+            
+            <div className="input-group">
+                <label>Gender</label>
+                <select name="gender" className="input-field" onChange={handleChange} value={formData.gender}>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div className="input-group">
+                <label>Marital Status</label>
+                <select name="marital_status" className="input-field" onChange={handleChange} value={formData.marital_status}>
+                    <option value="Single">Single</option>
+                    <option value="Married">Married</option>
+                    <option value="Divorced">Divorced</option>
+                    <option value="Widowed">Widowed</option>
+                </select>
+            </div>
+
+            <div className="input-group">
+                <label>Income Range</label>
+                <select name="income_range" className="input-field" onChange={handleChange} value={formData.income_range}>
+                    <option value="0-5 LPA">0-5 LPA</option>
+                    <option value="5-10 LPA">5-10 LPA</option>
+                    <option value="10-20 LPA">10-20 LPA</option>
+                    <option value="30+ LPA">30+ LPA</option>
+                </select>
+            </div>
+            
+            <div className="input-group">
+                <label>Date of Birth</label>
+                <input name="dob" type="date" className="input-field" onChange={handleChange} required />
+            </div>
+
+            <button type="submit" className="signup-btn">
               Complete Registration
             </button>
+            
+            <div className="full-width text-center" style={{ textAlign: 'center', marginTop: '10px' }}>
+                <p style={{ fontSize: '14px', color: '#666' }}>
+                    Already have an account? <Link to="/login" style={{ fontWeight: 'bold', color: '#000' }}>Sign In</Link>
+                </p>
+            </div>
+
           </form>
         </div>
       </div>

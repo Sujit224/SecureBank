@@ -8,7 +8,7 @@ from app.auth.dependencies import get_current_user, get_db
 from app.auth.utils import create_access_token, get_password_hash,generate_account_number, verify_password
 from fastapi.security import OAuth2PasswordBearer
 
-router = APIRouter(prefix="/users",tags=["Autenciation"])
+router = APIRouter(prefix="/users",tags=["Users"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 @router.get("/me")

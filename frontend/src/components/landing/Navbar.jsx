@@ -42,14 +42,14 @@ const Navbar = () => {
           </button>
           
           {user ? (
-            <div className="flex items-center gap-4">
+            <div className="nav-auth">
                <Link to="/user-dashboard" className="nav-link" style={{ fontWeight: '600' }}>
                  Dashboard
                </Link>
-               <button onClick={handleLogout} className="signin-btn" style={{ backgroundColor: 'transparent', color: 'var(--color-text)' }}>
+               <button onClick={handleLogout} className="signin-btn" style={{ backgroundColor: 'transparent', color: 'var(--color-text)', border: 'none', padding: '0' }}>
                  Logout
                </button>
-               <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+               <div className="user-avatar">
                   <User size={18} />
                </div>
             </div>
