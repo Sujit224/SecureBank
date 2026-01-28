@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
-import { Search, Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Search, Menu, X, User } from 'lucide-react'; // Added User icon
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext'; // Import AuthContext
 import './Navbar.css';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, logout } = useAuth(); // Get user and logout from context
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <nav className="navbar">
@@ -20,7 +28,7 @@ const Navbar = () => {
 
         {/* Desktop Menu */}
         <div className="nav-links">
-          <a href="#" className="nav-link">Home</a>
+          <Link to="/" className="nav-link">Home</Link>
           <a href="#" className="nav-link">Learn</a>
           <a href="#" className="nav-link">Help</a>
           <a href="#" className="nav-link">Blog</a>
@@ -32,9 +40,24 @@ const Navbar = () => {
           <button className="search-btn">
             <Search size={20} />
           </button>
-          <Link to="/login" className="signin-btn">
-            Sign In
-          </Link>
+          
+          {user ? (
+            <div className="flex items-center gap-4">
+               <Link to="/user-dashboard" className="nav-link" style={{ fontWeight: '600' }}>
+                 Dashboard
+               </Link>
+               <button onClick={handleLogout} className="signin-btn" style={{ backgroundColor: 'transparent', color: 'var(--color-text)' }}>
+                 Logout
+               </button>
+               <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <User size={18} />
+               </div>
+            </div>
+          ) : (
+            <Link to="/login" className="signin-btn">
+              Sign In
+            </Link>
+          )}
         </div>
 
         {/* Mobile Toggle */}
@@ -46,15 +69,25 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="mobile-menu">
-          <a href="#" className="mobile-link">Home</a>
+          <Link to="/" className="mobile-link">Home</Link>
           <a href="#" className="mobile-link">Learn</a>
           <a href="#" className="mobile-link">Help</a>
           <a href="#" className="mobile-link">Blog</a>
           <a href="#" className="mobile-link">About</a>
           <div style={{ height: '1px', backgroundColor: 'var(--color-gray)', margin: '8px 0' }}></div>
-          <Link to="/login" className="mobile-signin">
-            Sign In
-          </Link>
+          
+          {user ? (
+            <>
+              <Link to="/user-dashboard" className="mobile-link">Dashboard</Link>
+              <button onClick={handleLogout} className="mobile-signin" style={{ marginTop: '10px' }}>
+                Logout
+              </button>
+            </>
+          ) : (
+             <Link to="/login" className="mobile-signin">
+              Sign In
+            </Link>
+          )}
         </div>
       )}
     </nav>

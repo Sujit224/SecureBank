@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import API from '../api/axios'; 
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'; // Use the context we made!
-import Navbar from '../components/Navbar';
-import './Login.css'; // We will create this specific style file next
+import Navbar from '../components/landing/Navbar';
+import './Login.css';
 
 const Login = () => {
   const [form, setForm] = useState({ username: '', password: '' });
