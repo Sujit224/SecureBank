@@ -1,18 +1,54 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
-  --color-bg: #FFFFFF;
-  --color-text: #1A1A1A;
-  --color-text-light: #555555;
+  /* Base - Light Mode */
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #F5F5F7;
+  --color-bg-tertiary: #FFFFFF;
+  /* Cards */
+
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: #555555;
+  --color-text-inverse: #FFFFFF;
+
+  --color-border: #E5E5E5;
+  --color-border-hover: #D4D4D4;
+
   --color-accent: #CCFF00;
   /* Lime Green */
   --color-purple: #9D4EDD;
   --color-dark: #000000;
-  --color-gray: #F5F5F7;
-  --color-border: #E5E5E5;
+
+  --color-glass-border: rgba(0, 0, 0, 0.05);
+  --color-shadow: rgba(0, 0, 0, 0.05);
 
   --font-display: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
+}
+
+[data-theme='dark'] {
+  --color-bg-primary: #0A0A0A;
+  --color-bg-secondary: #121212;
+  --color-bg-tertiary: #1E1E1E;
+
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #A1A1AA;
+  --color-text-inverse: #000000;
+
+  --color-border: #2D2D2D;
+  --color-border-hover: #3F3F46;
+
+  /* Accent Adjustments for Dark Mode if needed, keeping Lime pop */
+  --color-dark: #FFFFFF;
+  /* In dark mode, 'dark' elements often invert or stay dark? 
+                          Wait, if semantic, --color-dark usually meant pure black. 
+                          Let's be careful. If usage was 'background: var(--color-dark)', it was black.
+                          In dark mode, it should probably stay black OR become matching bg.
+                          Let's aliasing 'var(--color-dark)' logic is tricky. 
+                          Better to introduce --color-surface-inverse */
+
+  --color-glass-border: rgba(255, 255, 255, 0.1);
+  --color-shadow: rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -23,8 +59,9 @@
 
 body {
   font-family: var(--font-body);
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  background-color: var(--color-bg-secondary);
+  /* Usually dashboard background is gray/secondary */
+  color: var(--color-text-primary);
   line-height: 1.5;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -108,7 +145,8 @@ label {
 
 .btn-primary {
   background-color: var(--color-accent);
-  color: var(--color-dark);
+  color: #000000;
+  /* Always black text on Lime */
 }
 
 .btn-primary:hover {

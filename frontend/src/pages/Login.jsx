@@ -31,6 +31,7 @@ const Login = () => {
       navigate('/user-dashboard'); 
       
     } catch (err) {
+      console.error(err);
       setError("Invalid Username or Password");
     }
   };
@@ -77,7 +78,7 @@ const Login = () => {
           </form>
 
           <p style={{ marginTop: '24px', fontSize: '0.9rem', color: '#666' }}>
-            New to NovaBank? <a href="/signup" style={{ color: 'black', fontWeight: 'bold' }}>Create an account</a>
+            New to SecureBank? <a href="/signup" style={{ color: 'black', fontWeight: 'bold' }}>Create an account</a>
           </p>
         </div>
       </div>
