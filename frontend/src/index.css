@@ -22,6 +22,9 @@
   --color-glass-border: rgba(0, 0, 0, 0.05);
   --color-shadow: rgba(0, 0, 0, 0.05);
 
+  --color-success: #10B981;
+  --color-danger: #EF4444;
+
   --font-display: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
 }

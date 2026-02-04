@@ -89,12 +89,11 @@
 }
 
 .sidebar-item.active {
-  background-color: rgba(255, 255, 255, 0.05);
-  /* Subtle dark mode highlight */
+  background-color: #000000;
   color: var(--color-accent);
-  /* Neon text */
-  border-left: 3px solid var(--color-accent);
-  /* Add a border to make it pop without full white bg */
+  border-left: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme='light'] .sidebar-item.active {
@@ -163,6 +162,7 @@
   justify-content: space-between;
   position: relative;
   overflow: hidden;
+  margin-bottom: 32px;
 }
 
 .balance-label {
@@ -460,5 +460,192 @@
   .stats-grid,
   .profile-details-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Transaction History */
+.history-container {
+  width: 100%;
+  height: 100%;
+  padding: 24px;
+}
+
+.history-card {
+  background: var(--color-bg-tertiary);
+  border-radius: 24px;
+  padding: 32px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 30px var(--color-shadow);
+  min-height: calc(100vh - 140px);
+  display: flex;
+  flex-direction: column;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.history-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.history-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.table-wrapper {
+  position: relative;
+  overflow-x: auto;
+  flex-grow: 1;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.history-table th {
+  padding: 16px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-bg-secondary);
+}
+
+.history-table td {
+  padding: 16px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.history-table tr:hover td {
+  background-color: var(--color-bg-secondary);
+}
+
+.history-table tr:last-child td {
+  border-bottom: none;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.status-badge.success {
+  background-color: #dcfce7;
+  color: #166534;
+  border-color: #bbf7d0;
+}
+
+.status-badge.canceled {
+  background-color: #fee2e2;
+  color: #ef4444;
+  border-color: #fecaca;
+}
+
+.status-badge.pending {
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border-color: #e5e7eb;
+}
+
+[data-theme='dark'] .status-badge.success {
+  background-color: rgba(22, 101, 52, 0.2);
+  color: #86efac;
+  border-color: rgba(22, 101, 52, 0.3);
+}
+
+[data-theme='dark'] .status-badge.canceled {
+  background-color: rgba(185, 28, 28, 0.2);
+  color: #fca5a5;
+  border-color: rgba(185, 28, 28, 0.3);
+}
+
+[data-theme='dark'] .status-badge.pending {
+  background-color: rgba(75, 85, 99, 0.2);
+  color: #d1d5db;
+  border-color: rgba(75, 85, 99, 0.3);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 32px;
+  margin-top: auto;
+  border-top: 1px solid var(--color-border);
+}
+
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.pagination-btn:hover {
+  color: var(--color-text-primary);
+}
+
+.pagination-numbers {
+  display: flex;
+  gap: 4px;
+}
+
+.page-number {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: all 0.2s;
+}
+
+.page-number:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+.page-number.active {
+  background-color: var(--color-dark);
+  color: var(--color-bg-primary);
+  font-weight: 700;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

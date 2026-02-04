@@ -1,6 +1,6 @@
-from pydantic import BaseModel, EmailStr, Field
-from typing import Literal, Optional
-from datetime import date, datetime
+from pydantic import BaseModel, EmailStr, Field, field_validator
+from typing import Literal, Optional, List
+from datetime import date, datetime, timezone
 
 # Auth Schemas
 class UserCreate(BaseModel):
@@ -50,3 +50,40 @@ class Token(BaseModel):
 
 
 # Transaction Schemas
+
+class DepositRequest(BaseModel):
+    amount:float
+    description:str
+
+
+class TransferRequest(BaseModel):
+    reciever_account:str
+    amount:float
+    description:str
+
+class TransactionHistoryResponse(BaseModel):
+    transaction_id:int
+    account_no:str
+    transaction_type:str
+    amount:float
+    balance_after:float
+    description:str
+    status:str
+    timestamp:datetime
+
+    @field_validator('timestamp')
+    def set_timezone(cls, v):
+        if v and v.tzinfo is None:
+            return v.replace(tzinfo=timezone.utc)
+        return v
+    
+
+
+    class Config:
+        from_attributes = True
+
+class PaginatedTransactionHistory(BaseModel):
+    total: int
+    page: int
+    size: int
+    items: List[TransactionHistoryResponse]

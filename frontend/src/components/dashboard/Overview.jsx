@@ -9,14 +9,14 @@ const Overview = ({ user }) => {
       <h2 className="section-title">Overview</h2>
       
       {/* Balance Card */}
-      <div className="glass-card balance-card mb-8">
+      <div className="glass-card balance-card">
           <div className="absolute top-0 right-0 p-5 opacity-10">
               <TrendingUp size={120} color="#fff" /> 
           </div>
           
           <div>
               <p className="balance-label">Total Balance</p>
-              <h2 className="balance-amount">${user.balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</h2>
+              <h2 className="balance-amount">₹{user.balance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</h2>
           </div>
           
           <div className="card-details">
@@ -58,7 +58,7 @@ const Overview = ({ user }) => {
             </div>
             <div>
                <p className="stat-label">Monthly Limit</p>
-               <p className="stat-value">$50,000</p>
+               <p className="stat-value">₹50,000</p>
             </div>
          </div>
       </div>

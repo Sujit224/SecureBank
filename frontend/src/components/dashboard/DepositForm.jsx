@@ -1,32 +1,35 @@
 import React, { useState } from 'react';
-import { Send, CheckCircle, AlertCircle } from 'lucide-react';
+import { Wallet, CheckCircle, AlertCircle } from 'lucide-react';
 import API from '../../api/axios';
 
-const TransferForm = ({ onTransferSuccess }) => {
-  const [receiver, setReceiver] = useState('');
+const DepositForm = ({ onDepositSuccess }) => {
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleTransfer = async (e) => {
+  const handleDeposit = async (e) => {
     e.preventDefault();
     setStatus(null);
+    
+    if (parseFloat(amount) > 200000) {
+        setStatus({ type: 'error', msg: 'Deposit limit allowed is ₹2,00,000' });
+        return;
+    }
+
     setLoading(true);
 
     try {
-      await API.post('/transactions/send', {
-        reciever_account: receiver,
+      await API.post('/transactions/deposit', {
         amount: parseFloat(amount),
         description: description,
       });
-      setStatus({ type: 'success', msg: 'Transfer Successful!' });
+      setStatus({ type: 'success', msg: 'Deposit Successful!' });
       setAmount(''); 
-      setReceiver('');
       setDescription('');
-      if(onTransferSuccess) onTransferSuccess(); // Callback to refresh balance
+      if(onDepositSuccess) onDepositSuccess(); // Callback to refresh balance
     } catch (err) {
-      setStatus({ type: 'error', msg: err.response?.data?.detail || "Transaction Failed" });
+      setStatus({ type: 'error', msg: err.response?.data?.detail || "Deposit Failed" });
     } finally {
       setLoading(false);
     }
@@ -34,30 +37,19 @@ const TransferForm = ({ onTransferSuccess }) => {
 
   return (
     <div className="transfer-section animate-fade">
-
       
       <div className="glass-card transfer-card-large">
          <div className="transfer-header">
             <div className="icon-box">
-               <Send size={24} />
+               <Wallet size={24} />
             </div>
             <div>
-               <h3>Quick Transfer</h3>
-               <p>Send money instantly to any SecureBank account.</p>
+               <h3>Deposit Funds</h3>
+               <p>Add money to your SecureBank account.</p>
             </div>
          </div>
 
-         <form onSubmit={handleTransfer} className="transfer-form-large">
-            <div className="form-group">
-                <label>Receiver Account Number</label>
-                <input 
-                    className="input-field" 
-                    placeholder="e.g. ACC12345"
-                    value={receiver}
-                    onChange={e => setReceiver(e.target.value)}
-                    required
-                />
-            </div>
+         <form onSubmit={handleDeposit} className="transfer-form-large">
             
             <div className="form-group">
                 <label>Amount (INR)</label>
@@ -79,7 +71,7 @@ const TransferForm = ({ onTransferSuccess }) => {
                 <label>Description</label>
                 <input 
                     className="input-field" 
-                    placeholder="What's this for?"
+                    placeholder="Source of funds, reason, etc."
                     value={description}
                     onChange={e => setDescription(e.target.value)}
                 />
@@ -93,7 +85,7 @@ const TransferForm = ({ onTransferSuccess }) => {
             )}
 
             <button disabled={loading} className="btn-primary transfer-btn">
-                {loading ? 'Processing...' : 'Send Money Securely'}
+                {loading ? 'Processing...' : 'Deposit Funds'}
             </button>
          </form>
       </div>
@@ -101,4 +93,4 @@ const TransferForm = ({ onTransferSuccess }) => {
   );
 };
 
-export default TransferForm;
+export default DepositForm;

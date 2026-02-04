@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from sqlalchemy import Column, Date,Integer,String,Float,DateTime
 from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
@@ -25,3 +26,18 @@ class User(Base):
     dob = Column(Date)
 
     created_at = Column(DateTime(timezone=True),server_default=func.now())
+
+class Transaction(Base):
+    __tablename__ = "transactions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    sender_account = Column(String(36), index=True)  
+    receiver_account = Column(String(36), index=True) 
+    amount = Column(Float)
+    transaction_type = Column("type", String(20))
+    description = Column(String(255)) 
+    status = Column(String(20))
+    timestamp = Column(DateTime(timezone=True), server_default=func.now())
+
+    sender_balance = Column(Float, default=0.0)
+    receiver_balance = Column(Float, default=0.0)

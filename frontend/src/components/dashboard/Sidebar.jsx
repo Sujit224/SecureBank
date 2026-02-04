@@ -1,11 +1,10 @@
-import { LayoutDashboard, Send, User, LogOut, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Send, User, LogOut, Home, Wallet, History } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ activeTab, setActiveTab }) => {
   const { logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -15,7 +14,9 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
+    { id: 'deposit', label: 'Deposit', icon: <Wallet size={20} /> },
     { id: 'transfer', label: 'Transfer Funds', icon: <Send size={20} /> },
+    { id: 'history', label: 'Transaction History', icon: <History size={20} /> },
     { id: 'profile', label: 'User Profile', icon: <User size={20} /> },
   ];
 
@@ -43,10 +44,11 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
       </div>
 
       <div className="sidebar-footer">
-        <button onClick={toggleTheme} className="sidebar-item mb-2">
-          {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-          <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+        <button onClick={() => navigate('/')} className="sidebar-item mb-2">
+          <Home size={20} />
+          <span>Back to Home</span>
         </button>
+
         <button onClick={handleLogout} className="sidebar-item logout-btn">
           <LogOut size={20} />
           <span>Logout</span>

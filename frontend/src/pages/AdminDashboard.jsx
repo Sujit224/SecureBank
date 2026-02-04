@@ -54,7 +54,7 @@ const AdminDashboard = () => {
               {data.recent_fraud_logs.map((log, idx) => (
                 <tr key={idx} style={{ borderBottom: '1px solid #222' }}>
                   <td style={{ padding: '15px 10px' }}>{log.sender}</td>
-                  <td style={{ color: 'white' }}>${log.amount}</td>
+                  <td style={{ color: 'white' }}>₹{log.amount}</td>
                   <td style={{ color: '#fca5a5' }}>BLOCKED</td>
                   <td>{new Date(log.timestamp).toLocaleTimeString()}</td>
                 </tr>
