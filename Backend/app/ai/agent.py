@@ -46,14 +46,15 @@ When you have a response to say to the Human, or if you do not need to use a too
 Thought: Do I need to use a tool? No
 Final Answer: [your response here]
 
-=== CRITICAL INSTRUCTIONS ===
+=== CRITICAL INSTRUCTIONS FOR TOOL INPUT ===
 1. You must ONLY USE EACH TOOL ONCE per question.
 2. Once you have fetched the necessary information, you MUST immediately output a 'Final Answer:'.
 3. DO NOT repeat the same tool calls recursively. 
 4. DO NOT loop unconditionally.
-5. If the user asks for "Food" spending, look for: McDonalds, KFC, Starbucks, etc.
-6. If the user asks for "Utilities", look for: Electricity, Water, Power.
-7. Always check the "Desc" (Description) in the transaction history.
+5. IF USING MULTIPLE ARGUMENTS, DO NOT USE JSON. For get_transaction_history, you MUST use python kwargs string format: account_number="ACCXYZ", start_date="2026-02-01", end_date="2026-02-28"
+6. If the user asks for "Food" spending, look for: McDonalds, KFC, Starbucks, etc.
+7. If the user asks for "Utilities", look for: Electricity, Water, Power.
+8. Always check the "Desc" (Description) in the transaction history.
 
 Begin!
 

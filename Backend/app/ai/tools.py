@@ -44,11 +44,30 @@ def get_transaction_history(
     db = SessionLocal()
     try:
         # 1. Clean the AI input to prevent case/space mismatches
-        if not isinstance(account_number, str):
-            account_number = account_number.account_number
-            start_date = account_number.start_date
-            end_date = account_number.end_date
-            limit = account_number.limit
+        # Sometimes the LLM passes a raw JSON string as the first argument instead of using python kwargs
+        try:
+            import json
+            import re
+            if isinstance(account_number, str):
+                if account_number.strip().startswith("{"):
+                    parsed = json.loads(account_number)
+                    account_number = parsed.get("account_number", account_number)
+                    start_date = parsed.get("start_date", start_date)
+                    end_date = parsed.get("end_date", end_date)
+                    limit = parsed.get("limit", limit)
+                elif "=" in account_number:
+                    # Parses key="value", key="value" formats
+                    kwargs_list = re.findall(r'(\w+)=[\'"]?([^\'",]+)[\'"]?', account_number)
+                    kwargs_dict = {k: v for k, v in kwargs_list}
+                    account_number = kwargs_dict.get("account_number", account_number)
+                    start_date = kwargs_dict.get("start_date", start_date)
+                    end_date = kwargs_dict.get("end_date", end_date)
+                    if "limit" in kwargs_dict:
+                        limit = int(kwargs_dict["limit"])
+        except Exception as e:
+            print(f"[DEBUG] String Parse error: {e}")
+            pass
+            
         target_acc = account_number.strip().lower()
         print(f"\n[DEBUG] AI Requesting History for: '{target_acc}' (Original: '{account_number}')")
 
