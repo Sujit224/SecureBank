@@ -8,3 +8,9 @@ pydantic[email]
 python-jose[cryptography]
 python-multipart
 bcrypt
+
+langchain
+langchain-community
+langchain-groq
+langchain-core
+langchain-experimental

@@ -4,13 +4,15 @@ from jose import JWTError, jwt # pyright: ignore[reportMissingModuleSource]
 from sqlalchemy.orm import Session
 from app import database_models
 from app.database import get_db
+from dotenv import load_dotenv
 import os
 
+load_dotenv()
 
 SECRET_KEY= os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="authh/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 

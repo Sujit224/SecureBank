@@ -26,7 +26,7 @@ def verify_password(password: str, hashed_password: str) -> bool:
 def create_access_token(data:dict,expires_delta:timedelta | None=None):
     to_encode = data.copy()
     print(to_encode)
-    expire = datetime.now(timezone.utc) +  (expires_delta or timedelta(minutes=15))
+    expire = datetime.now(timezone.utc) +  (expires_delta or timedelta(minutes=1500))
     to_encode.update({"exp":expire})
     return jwt.encode(to_encode,SECRET_KEY,algorithm=ALGORITHM)
 

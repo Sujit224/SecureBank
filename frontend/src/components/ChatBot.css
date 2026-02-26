@@ -154,3 +154,24 @@
     justify-content: center;
     cursor: pointer;
 }
+
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-style: italic;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
