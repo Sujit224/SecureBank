@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Loader2 } from 'lucide-react';
+import { MessageSquare, X, Send, Loader2, Bot } from 'lucide-react';
 import API from '../api/axios';
 import './ChatBot.css'; 
 
@@ -10,9 +10,16 @@ const ChatBot = () => {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
   const messagesEndRef = useRef(null);
 
-  const toggleChat = () => setIsOpen(!isOpen);
+  const toggleChat = () => {
+    setIsOpen(!isOpen);
+    if (!isOpen) {
+      setShowWelcome(false);
+      sessionStorage.setItem('aiWelcomeClosed', 'true');
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -20,6 +27,33 @@ const ChatBot = () => {
 
   useEffect(scrollToBottom, [messages, isLoading]);
 
+  useEffect(() => {
+    const isClosed = sessionStorage.getItem('aiWelcomeClosed');
+    let showTimer;
+    let hideTimer;
+    
+    if (!isClosed && !isOpen) {
+      showTimer = setTimeout(() => {
+        setShowWelcome(true);
+        // auto-disappear after 5 seconds
+        hideTimer = setTimeout(() => {
+          setShowWelcome(false);
+          sessionStorage.setItem('aiWelcomeClosed', 'true');
+        }, 5000);
+      }, 1500);
+    }
+    
+    return () => {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+    };
+  }, [isOpen]);
+
+  const closeWelcome = (e) => {
+    e.stopPropagation();
+    setShowWelcome(false);
+    sessionStorage.setItem('aiWelcomeClosed', 'true');
+  };
   const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
@@ -57,10 +91,21 @@ const ChatBot = () => {
 
   return (
     <div className="chatbot-container">
-      {/* Floating Button */}
-      <button className={`chatbot-toggle ${isOpen ? 'hidden' : ''}`} onClick={toggleChat}>
-        <MessageSquare size={24} />
-      </button>
+      {/* Floating Button & Welcome Tooltip */}
+      <div className={`chatbot-toggle-wrapper ${isOpen ? 'hidden' : ''}`}>
+        {showWelcome && (
+          <div className="chatbot-welcome-tooltip">
+            <button className="welcome-close-btn" onClick={closeWelcome}>
+              <X size={14} />
+            </button>
+            <div className="welcome-title">Need Help</div>
+            <div className="welcome-subtitle">Chat with AI Assistant</div>
+          </div>
+        )}
+        <button className="chatbot-toggle" onClick={toggleChat}>
+          <Bot size={34} strokeWidth={1.5} />
+        </button>
+      </div>
 
       {/* Chat Window */}
       <div className={`chatbot-window ${isOpen ? 'open' : ''}`}>

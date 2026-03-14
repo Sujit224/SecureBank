@@ -24,12 +24,14 @@ export const AuthProvider = ({ children }) => {
 
   const login = (token) => {
     localStorage.setItem('token', token);
+    sessionStorage.removeItem('aiWelcomeClosed'); // Reset welcome message
     const decoded = jwtDecode(token);
     setUser({ username: decoded.sub, role: decoded.role, token });
   };
 
   const logout = () => {
     localStorage.removeItem('token');
+    sessionStorage.removeItem('aiWelcomeClosed'); // Reset welcome message
     setUser(null);
   };
 

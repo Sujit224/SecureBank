@@ -6,27 +6,124 @@
 }
 
 .chatbot-toggle {
-    width: 60px;
-    height: 60px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
-    background-color: var(--color-accent);
-    color: var(--color-bg-primary);
-    /* Icon should be dark on accent usually, or use inverse */
-    border: none;
+    background-color: var(--color-dark);
+    /* Black background */
+    color: #ffffff;
+    /* White icon */
+    border: 2px solid var(--color-accent);
+    /* Green border */
     box-shadow: 0 4px 12px var(--color-shadow);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .chatbot-toggle:hover {
-    transform: scale(1.1) rotate(5deg);
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(204, 255, 0, 0.4);
+    /* subtle green glow on hover */
 }
 
-.chatbot-toggle.hidden {
+.chatbot-toggle-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chatbot-toggle-wrapper.hidden {
     display: none;
+}
+
+/* Welcome Tooltip */
+.chatbot-welcome-tooltip {
+    position: absolute;
+    bottom: calc(100% + 15px);
+    right: -10px;
+    background-color: var(--color-dark);
+    color: var(--color-accent);
+    padding: 14px 24px;
+    border-radius: 35px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--color-accent);
+    width: max-content;
+    text-align: center;
+    animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    transform-origin: bottom right;
+    z-index: 10000;
+}
+
+.chatbot-welcome-tooltip::before {
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    right: 35px;
+    border-width: 7px 7px 0 7px;
+    border-style: solid;
+    border-color: var(--color-accent) transparent transparent transparent;
+    display: block;
+    width: 0;
+}
+
+.chatbot-welcome-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    right: 36px;
+    /* align with the middle of the button below */
+    border-width: 6px 6px 0 6px;
+    border-style: solid;
+    border-color: var(--color-dark) transparent transparent transparent;
+    display: block;
+    width: 0;
+}
+
+.welcome-close-btn {
+    position: absolute;
+    top: 6px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: var(--color-accent);
+    cursor: pointer;
+    padding: 2px;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.welcome-close-btn:hover {
+    opacity: 1;
+}
+
+.welcome-title {
+    font-size: 17px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    margin-right: 16px;
+    margin-left: 16px;
+    /* space for close button */
+}
+
+.welcome-subtitle {
+    font-size: 15px;
+    opacity: 0.95;
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .chatbot-window {

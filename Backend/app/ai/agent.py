@@ -11,7 +11,7 @@ load_dotenv()
 
 llm = ChatGroq(
     model="meta-llama/llama-4-maverick-17b-128e-instruct",
-    # model = "openai/gpt-oss-120b",
+    #model = "openai/gpt-oss-120b",
     temperature=0,
     api_key=os.getenv("GROQ_API_KEY")
 )
