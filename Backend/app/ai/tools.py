@@ -71,19 +71,17 @@ def get_transaction_history(
 
     try:
 
-        # 🔥 Fix LLM malformed input (PLACE IT HERE)
+        
         if isinstance(account_number, str) and "account_number" in account_number:
             match = re.search(r'account_number\s*=\s*["\']?([^,"\']+)', account_number)
             if match:
                 account_number = match.group(1)
 
-        print("✅ PARSED ACCOUNT:", account_number)
+        print("PARSED ACCOUNT:", account_number)
 
         target_acc = clean(account_number)
 
-        # -----------------------------
-        # Step 1: Build base query (NO account filter here)
-        # -----------------------------
+
         query = db.query(Transaction)
 
         # -----------------------------
@@ -101,14 +99,10 @@ def get_transaction_history(
             )
             query = query.filter(Transaction.timestamp < end_dt)
 
-        # -----------------------------
-        # Step 3: Fetch results
-        # -----------------------------
+
         results = query.order_by(Transaction.timestamp.desc()).all()
 
-        # -----------------------------
-        # Step 4: Filter by account in Python (RELIABLE)
-        # -----------------------------
+
         filtered_results = []
 
         for tx in results:
@@ -120,9 +114,7 @@ def get_transaction_history(
 
         filtered_results = filtered_results[:limit]
 
-        # -----------------------------
-        # Step 5: Handle empty results
-        # -----------------------------
+
         if not filtered_results:
             print("FINAL DEBUG PRINTS..................")
             print("RESULTS:", len(results))
@@ -134,9 +126,6 @@ def get_transaction_history(
                 "transactions": []
             })
 
-        # -----------------------------
-        # Step 6: Format response
-        # -----------------------------
         transactions = []
 
         for tx in filtered_results:
@@ -158,9 +147,7 @@ def get_transaction_history(
                 "description": tx.description
             })
 
-        # -----------------------------
-        # Step 7: Return JSON
-        # -----------------------------
+
         return json.dumps({
             "status": "success",
             "count": len(transactions),
