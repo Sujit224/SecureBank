@@ -34,7 +34,7 @@ def get_current_balance(account_number: str) -> str:
             "status":"success",
             "account_number": account_number,
             "balance": float(user.balance),
-            "currency": "USD"
+            "currency": "INR(₹) Rupees"
         })
 
     except Exception as e:
@@ -71,7 +71,7 @@ def get_transaction_history(
 
     try:
 
-        # 🔥 Fix LLM malformed input (PLACE IT HERE)
+       
         if isinstance(account_number, str) and "account_number" in account_number:
             match = re.search(r'account_number\s*=\s*["\']?([^,"\']+)', account_number)
             if match:
