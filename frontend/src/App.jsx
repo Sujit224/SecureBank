@@ -6,6 +6,7 @@ import { AuthProvider } from './context/AuthContext';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import AccountSelector from './pages/AccountSelector';
 import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -21,7 +22,16 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             
             <Route 
-              path="/user-dashboard" 
+              path="/accounts" 
+              element={
+                <ProtectedRoute allowedRole="user">
+                  <AccountSelector />
+                </ProtectedRoute>
+              } 
+            />
+
+            <Route 
+              path="/user-dashboard/:accountNumber" 
               element={
                 <ProtectedRoute allowedRole="user">
                   <UserDashboard />

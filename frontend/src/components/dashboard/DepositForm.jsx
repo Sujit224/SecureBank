@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Wallet, CheckCircle, AlertCircle } from 'lucide-react';
 import API from '../../api/axios';
 
-const DepositForm = ({ onDepositSuccess }) => {
+const DepositForm = ({ accountNumber, onDepositSuccess }) => {
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState(null);
@@ -20,7 +20,7 @@ const DepositForm = ({ onDepositSuccess }) => {
     setLoading(true);
 
     try {
-      await API.post('/transactions/deposit', {
+      await API.post(`/transactions/${accountNumber}/deposit`, {
         amount: parseFloat(amount),
         description: description,
       });

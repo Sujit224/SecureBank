@@ -25,13 +25,11 @@ def signup(user: schemas.UserCreate,db:Session = Depends(get_db)):
     hashed_pwd = get_password_hash(user.password)
     acct_no = generate_account_number()
 
-    user = database_models.User(
+    new_user = database_models.User(
         username = user.username,
         email = user.email,
         password = hashed_pwd,
         role = user.role,
-        account_number=acct_no,
-        balance = 0.0,
         created_at = datetime.now(),
         mobile_number = user.mobile_number,
         age = user.age,
@@ -41,10 +39,22 @@ def signup(user: schemas.UserCreate,db:Session = Depends(get_db)):
         marital_status = user.marital_status,
         dob = user.dob)
     
-    db.add(user)
+    db.add(new_user)
     db.commit()
+    db.refresh(new_user)
 
-    return user
+    # Create a default account for the new user
+    new_account = database_models.Account(
+        user_id = new_user.user_id,
+        account_number = acct_no,
+        balance = 0.0,
+        account_type = "Savings"
+    )
+    db.add(new_account)
+    db.commit()
+    db.refresh(new_user)
+
+    return new_user
 
 
 

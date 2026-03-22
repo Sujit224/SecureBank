@@ -1,4 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+
+IST = timezone(timedelta(hours=5, minutes=30))
+
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage
 from app.ai.tools import get_current_balance, get_transaction_history
@@ -21,7 +24,7 @@ llm_with_tools = llm.bind_tools(tools)
 
 
 def ask_agent(question: str, user_account_number: str) -> str:
-    today_str = datetime.now().strftime("%Y-%m-%d")
+    today_str = datetime.now(IST).strftime("%Y-%m-%d")
 
     
     system_context = f"""

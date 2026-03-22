@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Send, CheckCircle, AlertCircle } from 'lucide-react';
 import API from '../../api/axios';
 
-const TransferForm = ({ onTransferSuccess }) => {
+const TransferForm = ({ accountNumber, onTransferSuccess }) => {
   const [receiver, setReceiver] = useState('');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
@@ -15,7 +15,7 @@ const TransferForm = ({ onTransferSuccess }) => {
     setLoading(true);
 
     try {
-      await API.post('/transactions/send', {
+      await API.post(`/transactions/${accountNumber}/send`, {
         reciever_account: receiver,
         amount: parseFloat(amount),
         description: description,

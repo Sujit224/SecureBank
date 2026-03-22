@@ -172,6 +172,29 @@
   letter-spacing: 1px;
 }
 
+.balance-label-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.balance-eye-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.balance-eye-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+}
+
 .balance-amount {
   font-family: var(--font-display);
   font-size: 48px;

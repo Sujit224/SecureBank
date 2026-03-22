@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Download, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import API from '../../api/axios';
 
-const TransactionHistory = () => {
+const TransactionHistory = ({ accountNumber }) => {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
@@ -13,7 +13,7 @@ const TransactionHistory = () => {
         const fetchHistory = async () => {
             setLoading(true);
             try {
-                const res = await API.get(`/transactions/history?page=${currentPage}&limit=${pageSize}`);
+                const res = await API.get(`/transactions/${accountNumber}/history?page=${currentPage}&limit=${pageSize}`);
                 // Check if response has items/total structure (backend pagination)
                 if (res.data && res.data.items) {
                     setTransactions(res.data.items);

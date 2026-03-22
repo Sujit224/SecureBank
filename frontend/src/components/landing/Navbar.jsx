@@ -43,7 +43,7 @@ const Navbar = () => {
           
           {user ? (
             <div className="nav-auth">
-               <Link to="/user-dashboard" className="nav-link" style={{ fontWeight: '600' }}>
+               <Link to="/accounts" className="nav-link" style={{ fontWeight: '600' }}>
                  Dashboard
                </Link>
                <button onClick={handleLogout} className="signin-btn" style={{ backgroundColor: 'transparent', color: 'var(--color-text)', border: 'none', padding: '0' }}>
@@ -78,7 +78,7 @@ const Navbar = () => {
           
           {user ? (
             <>
-              <Link to="/user-dashboard" className="mobile-link">Dashboard</Link>
+              <Link to="/accounts" className="mobile-link">Dashboard</Link>
               <button onClick={handleLogout} className="mobile-signin" style={{ marginTop: '10px' }}>
                 Logout
               </button>

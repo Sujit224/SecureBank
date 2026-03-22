@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import API from '../api/axios';
 import Sidebar from '../components/dashboard/Sidebar';
 import Overview from '../components/dashboard/Overview';
 import TransferForm from '../components/dashboard/TransferForm';
 import DepositForm from '../components/dashboard/DepositForm';
 import TransactionHistory from '../components/dashboard/TransactionHistory';
-import UserProfile from '../components/dashboard/UserProfile';
+
 import ChatBot from '../components/ChatBot';
 import './Dashboard.css';
 
 const UserDashboard = () => {
+  const { accountNumber } = useParams();
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
@@ -36,6 +39,15 @@ const UserDashboard = () => {
     </div>
   );
 
+  // Find the selected account from the user's accounts list
+  const selectedAccount = user?.accounts?.find(acc => acc.account_number === accountNumber);
+
+  // If account not found, redirect to accounts page
+  if (user && !selectedAccount) {
+    navigate('/accounts');
+    return null;
+  }
+
   return (
     <div className="dashboard-layout">
       {/* Sidebar Navigation */}
@@ -50,23 +62,20 @@ const UserDashboard = () => {
              {activeTab === 'deposit' && 'Deposit Funds'}
              {activeTab === 'transfer' && 'Transfer Funds'}
              {activeTab === 'history' && 'Transaction History'}
-             {activeTab === 'profile' && 'Your Profile'}
            </h1>
            <p className="page-subtitle">
              {activeTab === 'dashboard' && 'Here is what’s happening with your account today.'}
              {activeTab === 'deposit' && 'Add funds to your account securely.'}
              {activeTab === 'transfer' && 'Securely send money to friends and family.'}
              {activeTab === 'history' && 'View your past transactions.'}
-             {activeTab === 'profile' && 'Manage your personal information and settings.'}
            </p>
         </div>
 
         {/* Content Views */}
-        {activeTab === 'dashboard' && <Overview user={user} />}
-        {activeTab === 'deposit' && <DepositForm onDepositSuccess={fetchUserData} />}
-        {activeTab === 'transfer' && <TransferForm onTransferSuccess={fetchUserData} />}
-        {activeTab === 'history' && <TransactionHistory />}
-        {activeTab === 'profile' && <UserProfile user={user} />}
+        {activeTab === 'dashboard' && <Overview user={user} account={selectedAccount} />}
+        {activeTab === 'deposit' && <DepositForm accountNumber={accountNumber} onDepositSuccess={fetchUserData} />}
+        {activeTab === 'transfer' && <TransferForm accountNumber={accountNumber} onTransferSuccess={fetchUserData} />}
+        {activeTab === 'history' && <TransactionHistory accountNumber={accountNumber} />}
       </div>
 
       {/* ChatBot Widget */}

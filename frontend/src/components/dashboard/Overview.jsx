@@ -1,8 +1,10 @@
-import React from 'react';
-import { TrendingUp, DollarSign, Calendar, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import React, { useState } from 'react';
+import { TrendingUp, DollarSign, Calendar, ArrowUpRight, ArrowDownLeft, Eye, EyeOff } from 'lucide-react';
 
-const Overview = ({ user }) => {
-  if (!user) return null;
+const Overview = ({ user, account }) => {
+  const [showBalance, setShowBalance] = useState(false);
+
+  if (!user || !account) return null;
 
   return (
     <div className="dashboard-overview animate-fade">
@@ -15,8 +17,20 @@ const Overview = ({ user }) => {
           </div>
           
           <div>
-              <p className="balance-label">Total Balance</p>
-              <h2 className="balance-amount">₹{user.balance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</h2>
+              <div className="balance-label-row">
+                <p className="balance-label">Available Balance</p>
+                <button
+                  className="balance-eye-btn"
+                  onClick={() => setShowBalance(!showBalance)}
+                >
+                  {showBalance ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+              <h2 className="balance-amount">
+                {showBalance
+                  ? `₹${account.balance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
+                  : '₹ ••••••'}
+              </h2>
           </div>
           
           <div className="card-details">
@@ -25,8 +39,8 @@ const Overview = ({ user }) => {
                 <p className="font-medium text-lg">{user.username}</p>
             </div>
             <div className="text-right">
-                <p className="balance-label">Account No.</p>
-                <p className="highlight-text">{user.account_number}</p>
+                <p className="balance-label">{account.account_type} Account</p>
+                <p className="highlight-text">{account.account_number}</p>
             </div>
           </div>
       </div>

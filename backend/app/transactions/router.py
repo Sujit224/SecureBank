@@ -10,23 +10,36 @@ from datetime import datetime, timezone
 
 router = APIRouter(prefix="/transactions",tags = ["Transactions"])
 
-@router.post("/deposit")
-def deposit_money(deposit_request:DepositRequest,db:Session = Depends(get_db),current_user: database_models.User = Depends(get_current_user)):
+@router.post("/{account_number}/deposit")
+def deposit_money(
+    account_number: str,
+    deposit_request:DepositRequest,
+    db:Session = Depends(get_db),
+    current_user: database_models.User = Depends(get_current_user)
+):
     
     if deposit_request.amount > 200000:
         raise HTTPException(status_code=400, detail="Deposit limit exceeded. Maximum allowed is ₹2,00,000.")
 
-    current_user.balance += deposit_request.amount
+    account = db.query(database_models.Account).filter(
+        database_models.Account.account_number == account_number,
+        database_models.Account.user_id == current_user.user_id
+    ).first()
+
+    if not account:
+        raise HTTPException(status_code=404,detail = "Account not found.")
+
+    account.balance += deposit_request.amount
 
     transaction = database_models.Transaction(
         sender_account = "SELF",
-        receiver_account = current_user.account_number,
+        receiver_account = account.account_number,
         amount = deposit_request.amount,
         transaction_type = "DEPOSIT",
         description = deposit_request.description,
         status = "SUCCESS",
         timestamp = datetime.now(timezone.utc),
-        receiver_balance = current_user.balance
+        receiver_balance = account.balance
     )
 
     db.add(transaction)
@@ -34,31 +47,50 @@ def deposit_money(deposit_request:DepositRequest,db:Session = Depends(get_db),cu
 
     return{
         "message":"Deposit Successful",
-        "new_balance":current_user.balance,
+        "new_balance":account.balance,
         "transaction_id":transaction.id
     }
     
 
-@router.post("/send")
-def transfer_money(transfer_request:TransferRequest,db:Session = Depends(get_db),current_user: database_models.User = Depends(get_current_user)):
+@router.post("/{account_number}/send")
+def transfer_money(
+    account_number: str,
+    transfer_request:TransferRequest,
+    db:Session = Depends(get_db),
+    current_user: database_models.User = Depends(get_current_user)
+):
 
-    if transfer_request.reciever_account == current_user.account_number:
+    if transfer_request.reciever_account == account_number:
         raise HTTPException(status_code=400,detail="Cannot transfer to self.")
     
-    reciever = db.query(database_models.User).filter(database_models.User.account_number == transfer_request.reciever_account).first()
 
-    if not reciever:
-        raise HTTPException(status_code=404,detail = "Reciever account not found.")
+    sender_account = db.query(database_models.Account).filter(
+        database_models.Account.account_number == account_number,
+        database_models.Account.user_id == current_user.user_id
+    ).first()
+
+    if not sender_account:
+        raise HTTPException(status_code=404, detail="Sender account not found or unauthorized.")
+
+
+    reciever_account = db.query(database_models.Account).filter(
+        database_models.Account.account_number == transfer_request.reciever_account
+    ).first()
+
+    if not reciever_account:
+        raise HTTPException(status_code=404,detail = "Receiver account not found.")
+
+    if sender_account.balance < transfer_request.amount:
+        raise HTTPException(status_code=400, detail="Insufficient funds.")
     
-    if current_user.balance<transfer_request.amount:
-        raise HTTPException(status_code=400,detail="Insufficient funds.")
+
     
-    current_user.balance -= transfer_request.amount
-    reciever.balance += transfer_request.amount
+    sender_account.balance -= transfer_request.amount
+    reciever_account.balance += transfer_request.amount
 
     transaction = database_models.Transaction(
-        sender_account = current_user.account_number,
-        receiver_account = transfer_request.reciever_account,
+        sender_account = sender_account.account_number,
+        receiver_account = reciever_account.account_number,
         amount = transfer_request.amount,
         transaction_type = "TRANSFER",
         description = transfer_request.description,
@@ -66,36 +98,48 @@ def transfer_money(transfer_request:TransferRequest,db:Session = Depends(get_db)
         timestamp = datetime.now(timezone.utc),
         
         
-        sender_balance = current_user.balance,
-        receiver_balance = reciever.balance
+        sender_balance = sender_account.balance,
+        receiver_balance = reciever_account.balance
     )
 
     db.add(transaction)
     db.commit()
 
-    return {"message": "Transfer Successful", "new_balance": current_user.balance}
+    return {
+        "message": "Transfer Successful",
+        "new_balance": sender_account.balance
+    }
 
 
-@router.get("/history",response_model=schemas.PaginatedTransactionHistory)
+@router.get("/{account_number}/history", response_model=schemas.PaginatedTransactionHistory)
 def transaction_history(
+    account_number: str,
     page: int = 1,
     limit: int = 10,
     db: Session = Depends(get_db),
     current_user: database_models.User = Depends(get_current_user)
 ):
+    
+    account = db.query(database_models.Account).filter(
+        database_models.Account.account_number == account_number,
+        database_models.Account.user_id == current_user.user_id
+    ).first()
 
-    my_acc = current_user.account_number
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found or unauthorized.")
 
-    # Base query for filtering by user account
+    my_acc = account.account_number
+
+    
     query = db.query(database_models.Transaction).filter(
         (database_models.Transaction.sender_account == my_acc) |
         (database_models.Transaction.receiver_account == my_acc)
     )
 
-    # Calculate total count before pagination
+    
     total_count = query.count()
 
-    # Apply pagination and sorting
+    
     logs = query.order_by(database_models.Transaction.timestamp.desc())\
                 .offset((page - 1) * limit)\
                 .limit(limit)\
@@ -121,14 +165,14 @@ def transaction_history(
 
         formatted_history.append(
             schemas.TransactionHistoryResponse(
-                transaction_id = log.id,
-                account_no = other_party,
-                transaction_type = display_type,
-                amount = log.amount,
-                balance_after = my_balance_snapshot,
-                description = log.description,
-                status = log.status,
-                timestamp = log.timestamp,                
+                transaction_id=log.id,
+                account_no=other_party,
+                transaction_type=display_type,
+                amount=log.amount,
+                balance_after=my_balance_snapshot,
+                description=log.description,
+                status=log.status,
+                timestamp=log.timestamp,                
             )
         )
 

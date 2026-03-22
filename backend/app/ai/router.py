@@ -22,6 +22,8 @@ def chat_with_bank_agent(
     if not request.query.strip():
         raise HTTPException(status_code=400, detail="Query cannot be empty")
         
-    ai_answer = ask_agent(request.query, current_user.account_number)
+    # Get the first account number for the AI agent
+    user_account_number = current_user.accounts[0].account_number if current_user.accounts else ""
+    ai_answer = ask_agent(request.query, user_account_number)
     
     return {"response": ai_answer}

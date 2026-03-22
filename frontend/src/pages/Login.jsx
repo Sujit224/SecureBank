@@ -28,7 +28,7 @@ const Login = () => {
       login(res.data.access_token);
       
       // 4. Navigate based on role (We will decode in Context, but for now just go to dashboard)
-      navigate('/user-dashboard'); 
+      navigate('/accounts'); 
       
     } catch (err) {
       console.error(err);

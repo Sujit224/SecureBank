@@ -1,12 +1,15 @@
 from langchain.tools import tool
 from sqlalchemy import func, or_
 from app.database import session as SessionLocal
-from app.database_models import Transaction, User
+from app.database_models import Transaction, User, Account
 from datetime import datetime,timedelta,timezone
 import re
 import json
 
-# Tool 1: Get Balance
+
+IST = timezone(timedelta(hours=5, minutes=30))
+
+
 @tool
 def get_current_balance(account_number: str) -> str:
     """
@@ -22,9 +25,9 @@ def get_current_balance(account_number: str) -> str:
     #print(f"\n[DEBUG] Getting current balance for: {account_number}")
 
     try:
-        user = db.query(User).filter(User.account_number == account_number).first()
+        account = db.query(Account).filter(Account.account_number == account_number).first()
 
-        if not user:
+        if not account:
             return json.dumps({
                 "status":"error",
                 "error": "Account not found"
@@ -33,7 +36,7 @@ def get_current_balance(account_number: str) -> str:
         return json.dumps({
             "status":"success",
             "account_number": account_number,
-            "balance": float(user.balance),
+            "balance": float(account.balance),
             "currency": "INR(₹) Rupees"
         })
 
@@ -84,19 +87,15 @@ def get_transaction_history(
 
         query = db.query(Transaction)
 
-        # -----------------------------
-        # Step 2: Apply DATE filtering (SAFE)
-        # -----------------------------
+       
+        ist_offset = timedelta(hours=5, minutes=30)
+
         if start_date:
-            start_dt = datetime.strptime(start_date, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+            start_dt = datetime.strptime(start_date, "%Y-%m-%d") - ist_offset
             query = query.filter(Transaction.timestamp >= start_dt)
 
         if end_date:
-            end_dt = (
-                datetime.strptime(end_date, "%Y-%m-%d")
-                .replace(tzinfo=timezone.utc)
-                + timedelta(days=1)
-            )
+            end_dt = datetime.strptime(end_date, "%Y-%m-%d") + timedelta(days=1) - ist_offset
             query = query.filter(Transaction.timestamp < end_dt)
 
 
