@@ -272,3 +272,46 @@
 .animate-spin {
     animation: spin 1s linear infinite;
 }
+
+/* Account Selection Buttons */
+.message-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.bot-wrapper {
+    align-items: flex-start;
+}
+
+.user-wrapper {
+    align-items: flex-end;
+}
+
+.message-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+    width: 100%;
+    max-width: 85%;
+    align-self: flex-start;
+}
+
+.message-option-btn {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+.message-option-btn:hover {
+    background: var(--color-text-primary);
+    color: var(--color-bg-primary);
+    border-color: var(--color-text-primary);
+}

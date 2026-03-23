@@ -27,6 +27,7 @@ async def get_user_profile(token: str = Depends(oauth2_scheme), db: Session = De
 
     
     return schemas.UserResponse(
+        user_id=target_user.user_id,
         username=target_user.username,
         email=target_user.email,
         role=target_user.role,

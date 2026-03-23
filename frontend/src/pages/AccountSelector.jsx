@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import API from '../api/axios';
-import { CreditCard, Mail, Smartphone, Briefcase, LogOut, Home, ChevronRight, Wallet, Plus, User, Calendar, DollarSign, Shield, Eye, EyeOff } from 'lucide-react';
+import { CreditCard, Mail, Smartphone, Briefcase, LogOut, Home, ChevronRight, Wallet, Plus, User, Calendar, DollarSign, Shield, Eye, EyeOff, Hash } from 'lucide-react';
 import ChatBot from '../components/ChatBot';
 import './AccountSelector.css';
 
@@ -97,7 +97,19 @@ const AccountSelector = () => {
             <div className="profile-hero-info">
               <h1 className="profile-hero-name">{user.username}</h1>
               <p className="profile-hero-email">{user.email}</p>
-              <span className="profile-hero-role">{user.role}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                <span className="profile-hero-role">{user.role}</span>
+                <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem' }}>•</span>
+                <span style={{ 
+                  color: 'rgba(255,255,255,0.9)', 
+                  fontSize: '0.8rem', 
+                  fontFamily: 'monospace',
+                  background: 'rgba(255,255,255,0.1)',
+                  padding: '2px 8px',
+                  borderRadius: '4px',
+                  letterSpacing: '1px'
+                }}>SB-{String(user.user_id).padStart(4, '0')}</span>
+              </div>
             </div>
           </div>
 

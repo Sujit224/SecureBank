@@ -115,10 +115,6 @@ def get_transaction_history(
 
 
         if not filtered_results:
-            print("FINAL DEBUG PRINTS..................")
-            print("RESULTS:", len(results))
-            print("FILTERED:", len(filtered_results))
-
             return json.dumps({
                 "status": "success",
                 "count": 0,
@@ -165,5 +161,60 @@ def get_transaction_history(
         })
 
         
+    finally:
+        db.close()
+
+
+@tool
+def get_profile_details(account_number: str) -> str:
+    """
+    Fetch the user profile and demographic details associated with an account.
+    
+    IMPORTANT:
+    - Returns structured JSON containing name, email, mobile, age, profession, etc.
+    - Use this when the user asks about their own profile information, age, contact info, etc.
+    """
+    db = SessionLocal()
+    try:
+        if isinstance(account_number, str) and "account_number" in account_number:
+            match = re.search(r'account_number\s*=\s*["\']?([^,"\']+)', account_number)
+            if match:
+                account_number = match.group(1)
+                
+        target_acc = clean(account_number)
+        
+        # Try exact match first
+        account = db.query(Account).filter(Account.account_number == account_number).first()
+        
+        # Fallback to cleaned match
+        if not account:
+            account = db.query(Account).filter(func.lower(func.replace(Account.account_number, ' ', '')) == target_acc).first()
+            
+        if not account:
+            return json.dumps({"status": "error", "error": "Account not found"})
+            
+        user = account.owner
+        if not user:
+            return json.dumps({"status": "error", "error": "User profile not linked to this account"})
+            
+        return json.dumps({
+            "status": "success",
+            "username": user.username,
+            "email": user.email,
+            "mobile_number": user.mobile_number,
+            "age": user.age,
+            "profession": user.profession,
+            "income_range": user.income_range,
+            "gender": user.gender,
+            "marital_status": user.marital_status,
+            "account_type": account.account_type,
+            "member_since": str(user.created_at.date()) if user.created_at else None
+        })
+        
+    except Exception as e:
+        return json.dumps({
+            "status": "error",
+            "message": str(e)
+        })
     finally:
         db.close()

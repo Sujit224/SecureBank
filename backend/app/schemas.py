@@ -40,6 +40,7 @@ class AccountResponse(BaseModel):
         from_attributes = True
 
 class UserResponse(BaseModel):
+    user_id: int
     username: str
     email: str
     role: str
@@ -102,3 +103,12 @@ class PaginatedTransactionHistory(BaseModel):
     page: int
     size: int
     items: List[TransactionHistoryResponse]
+
+
+class MonthlyCashFlow(BaseModel):
+    month:str
+    income:float
+    spending:float
+    cash_flow: float
+
+

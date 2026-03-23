@@ -4,7 +4,7 @@ IST = timezone(timedelta(hours=5, minutes=30))
 
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage
-from app.ai.tools import get_current_balance, get_transaction_history
+from app.ai.tools import get_current_balance, get_transaction_history, get_profile_details
 import os
 from dotenv import load_dotenv
 import json
@@ -19,35 +19,57 @@ llm = ChatGroq(
 )
 
 
-tools = [get_current_balance, get_transaction_history]
+tools = [get_current_balance, get_transaction_history, get_profile_details]
 llm_with_tools = llm.bind_tools(tools)
 
 
-def ask_agent(question: str, user_account_number: str) -> str:
+def ask_agent(question: str, user_account_number: str, user_accounts: list = None) -> str:
     today_str = datetime.now(IST).strftime("%Y-%m-%d")
-
+    accounts_str = ", ".join(user_accounts) if user_accounts else "None"
     
-    system_context = f"""
-You are a financial assistant for SecureBank.
+    if user_account_number == "NONE" or not user_account_number:
+        # User has not selected an account yet
+        active_tools = [get_profile_details]
+        system_context = f"""
+        You are a financial assistant for SecureBank.
+        Available User Accounts: {accounts_str}
+        Selected Account: NONE
+        Today's Date: {today_str}
 
-User Account: {user_account_number}
-Today's Date: {today_str}
+        CRITICAL RULES:
+        - The user has NOT selected an account yet.
+        - You DO NOT have tools to check balance or transactions.
+        - If the user asks about an account-specific financial detail (e.g., balance, transactions, history), you MUST reply EXACTLY with the prefix "REQUIRE_ACCOUNT:" followed by a short friendly message asking them which account to check. Example: "REQUIRE_ACCOUNT: Sure, which account's balance would you like to check?"
+        - If the user asks a general profile query (e.g. name, age, contact info), you MUST use `get_profile_details` with the FIRST account from Available User Accounts as the argument.
+        - Be clear and user-friendly.
+        """
+    else:
+        # User has selected an account
+        active_tools = [get_current_balance, get_transaction_history, get_profile_details]
+        system_context = f"""
+        You are a financial assistant for SecureBank.
+        Available User Accounts: {accounts_str}
+        Selected Account: {user_account_number}
+        Today's Date: {today_str}
 
-RULES:
-- Always use tools for financial data
-- Never guess or fabricate transactions
-- Use returned JSON to answer
-- Be clear and user-friendly
-"""
+        RULES:
+        - Always use tools for financial data when answering.
+        - The user IS asking about the Selected Account ({user_account_number}).
+        - Never guess or fabricate transactions.
+        - Use returned JSON to answer.
+        - Be clear and user-friendly.
+        """
+        
+    bound_llm = llm.bind_tools(active_tools)
 
     messages = [
         {"role": "system", "content": system_context},
         {"role": "user", "content": question}
     ]
-
+    
     try:
         
-        response = llm_with_tools.invoke(messages)
+        response = bound_llm.invoke(messages)
 
         
         if response.tool_calls:
@@ -65,6 +87,9 @@ RULES:
 
             elif tool_name == "get_current_balance":
                 tool_output = get_current_balance.invoke(tool_args)
+                
+            elif tool_name == "get_profile_details":
+                tool_output = get_profile_details.invoke(tool_args)
 
             else:
                 return "Unknown tool requested."
@@ -79,7 +104,7 @@ RULES:
                 "tool_call_id": tool_call["id"]
             })
 
-            final_response = llm_with_tools.invoke(messages)
+            final_response = bound_llm.invoke(messages)
 
             return final_response.content
 
