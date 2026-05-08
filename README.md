@@ -1,6 +1,6 @@
 # 🏦 SecureBank
 
-![SecureBank App Preview](https://via.placeholder.com/1200x600?text=SecureBank+-+The+Future+of+Banking)
+
 
 SecureBank is a modern, full-stack banking application that combines traditional banking features with an intelligent, AI-powered financial assistant. The application allows users to manage multiple accounts, perform core financial transactions, visualize their cash flow, and interact with an integrated Langchain chatbot.
 
