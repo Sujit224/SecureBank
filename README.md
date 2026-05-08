@@ -1,34 +1,34 @@
-# 🏦 SecureBank
+#  SecureBank
 
 
 
 SecureBank is a modern, full-stack banking application that combines traditional banking features with an intelligent, AI-powered financial assistant. The application allows users to manage multiple accounts, perform core financial transactions, visualize their cash flow, and interact with an integrated Langchain chatbot.
 
-## ✨ Features
+##  Features
 
-### 👤 Comprehensive User Management
+###  Comprehensive User Management
 - **Detailed Profiles**: Capture rich demographic information including age, profession, income range, gender, and marital status.
 - **Secure Authentication**: Robust JWT-based authentication ensuring secure sessions and data privacy.
 - **Multi-Account System**: Users can open and manage multiple accounts (Savings, Current) seamlessly under a single profile.
 
-### 💸 Core Banking Operations
+###  Core Banking Operations
 - **Deposits**: Add funds to your accounts securely.
 - **Transfers**: Send money between different accounts with real-time balance updates.
 - **Transaction History**: Paginated, detailed history clearly indicating whether funds were Sent, Received, or Deposited, along with a rolling balance snapshot.
 
-### 📊 Cash Flow Analytics
+###  Cash Flow Analytics
 - **Visual Dashboards**: Beautiful, dynamic bar charts built with `Recharts`.
 - **Income vs. Spending**: Track financial behavior over the past months.
 - **Net Cash Flow**: Automatically calculates and highlights net cash flow in intuitive custom tooltips.
 
-### 🤖 Intelligent AI Assistant
+###  Intelligent AI Assistant
 - **Integrated Chatbot**: Ask questions about your bank details, check your balance, or inquire about past transactions.
 - **Context-Aware**: The agent intelligently asks for account selection when you query account-specific data, but answers general profile questions instantly.
 - **Powered by Langchain & Groq**: Fast and accurate natural language processing acting as a virtual teller.
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 **Frontend**
 - React 19 + Vite
@@ -48,7 +48,7 @@ SecureBank is a modern, full-stack banking application that combines traditional
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 Follow these steps to get the project running locally on your machine.
 
