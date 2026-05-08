@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import API from '../api/axios';
 import { CreditCard, Mail, Smartphone, Briefcase, LogOut, Home, ChevronRight, Wallet, Plus, User, Calendar, DollarSign, Shield, Eye, EyeOff, Hash } from 'lucide-react';
 import ChatBot from '../components/ChatBot';
+import InvestmentAdvisor from '../components/dashboard/InvestmentAdvisor';
 import './AccountSelector.css';
 
 const AccountSelector = () => {
@@ -252,6 +253,11 @@ const AccountSelector = () => {
               </div>
             )}
           </div>
+        </div>
+
+        {/* AI Investment Advisor Section */}
+        <div style={{ marginTop: '48px', marginBottom: '60px' }}>
+          <InvestmentAdvisor />
         </div>
       </div>
       {/* ChatBot Widget */}

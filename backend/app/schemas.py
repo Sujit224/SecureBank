@@ -88,6 +88,7 @@ class TransactionHistoryResponse(BaseModel):
     description:str
     status:str
     timestamp:datetime
+    category:str
 
     @field_validator('timestamp')
     def set_timezone(cls, v):
@@ -112,3 +113,14 @@ class MonthlyCashFlow(BaseModel):
     cash_flow: float
 
 
+class AccountAnalyticsResponse(BaseModel):
+    account_number: str
+    data: List[MonthlyCashFlow]
+
+class CategoryAnalytics(BaseModel):
+    category: str
+    amount: float
+
+class CategoryAnalyticsResponse(BaseModel):
+    account_number: str
+    data: List[CategoryAnalytics]

@@ -8,6 +8,7 @@ pydantic[email]
 python-jose[cryptography]
 python-multipart
 bcrypt
+python-dateutil
 
 langchain
 langchain-community

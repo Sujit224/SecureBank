@@ -1,4 +1,4 @@
-import { LayoutDashboard, Send, User, LogOut, Home, Wallet, History, CreditCard } from 'lucide-react';
+import { LayoutDashboard, Send, User, LogOut, Home, Wallet, History, CreditCard, TrendingUp } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,6 +17,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
     { id: 'deposit', label: 'Deposit', icon: <Wallet size={20} /> },
     { id: 'transfer', label: 'Transfer Funds', icon: <Send size={20} /> },
     { id: 'history', label: 'Transaction History', icon: <History size={20} /> },
+    { id: 'analytics', label: 'Analytics', icon: <TrendingUp size={20} /> },
   ];
 
   return (

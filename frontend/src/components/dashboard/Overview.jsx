@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TrendingUp, DollarSign, Calendar, ArrowUpRight, ArrowDownLeft, Eye, EyeOff } from 'lucide-react';
+import CashFlowChart from './CashFlowChart';
 
 const Overview = ({ user, account }) => {
   const [showBalance, setShowBalance] = useState(false);
@@ -76,7 +77,8 @@ const Overview = ({ user, account }) => {
             </div>
          </div>
       </div>
-
+      
+      <CashFlowChart accountNumber={account.account_number} />
     </div>
   );
 };

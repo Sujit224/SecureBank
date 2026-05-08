@@ -121,6 +121,7 @@ const TransactionHistory = ({ accountNumber }) => {
                                 <th>Amount</th>
                                 <th>Balance After</th>
                                 <th>Description</th>
+                                <th>Category</th>
                                 <th>Status</th>
                                 <th>Timestamp</th>
                             </tr>
@@ -128,11 +129,11 @@ const TransactionHistory = ({ accountNumber }) => {
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <td colSpan="8" style={{ textAlign: 'center', padding: '20px' }}>Loading...</td>
+                                    <td colSpan="9" style={{ textAlign: 'center', padding: '20px' }}>Loading...</td>
                                 </tr>
                             ) : transactions.length === 0 ? (
                                 <tr>
-                                    <td colSpan="8" style={{ textAlign: 'center', padding: '20px' }}>No transactions found.</td>
+                                    <td colSpan="9" style={{ textAlign: 'center', padding: '20px' }}>No transactions found.</td>
                                 </tr>
                             ) : (
                                 transactions.map((txn, index) => (
@@ -160,6 +161,9 @@ const TransactionHistory = ({ accountNumber }) => {
                                         </td>
                                         <td>
                                            {txn.description}
+                                        </td>
+                                        <td style={{ fontWeight: 500, color: 'var(--color-purple)' }}>
+                                            {txn.category || 'Others'}
                                         </td>
                                         <td>
                                             <span className={getStatusClass(txn.status)}>

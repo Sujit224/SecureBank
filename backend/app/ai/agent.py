@@ -8,8 +8,15 @@ from app.ai.tools import get_current_balance, get_transaction_history, get_profi
 import os
 from dotenv import load_dotenv
 import json
+import re
 
 load_dotenv()
+
+def _extract_acc(acc: str | None) -> str | None:
+    if isinstance(acc, str) and "account_number" in acc:
+        match = re.search(r'account_number\s*=\s*["\']?([^,"\']+)', acc)
+        if match: return match.group(1)
+    return acc
 
 
 llm = ChatGroq(
@@ -81,16 +88,18 @@ def ask_agent(question: str, user_account_number: str, user_accounts: list = Non
             print("🔧 TOOL CALL:", tool_name)
             print("📦 ARGS:", tool_args)
 
+            req_account = _extract_acc(tool_args.get("account_number"))
             
-            if tool_name == "get_transaction_history":
-                tool_output = get_transaction_history.invoke(tool_args)
-
-            elif tool_name == "get_current_balance":
-                tool_output = get_current_balance.invoke(tool_args)
-                
-            elif tool_name == "get_profile_details":
-                tool_output = get_profile_details.invoke(tool_args)
-
+            if tool_name in ["get_transaction_history", "get_current_balance", "get_profile_details"]:
+                if req_account not in user_accounts:
+                    tool_output = json.dumps({"status": "error", "error": "Unauthorized account access."})
+                else:
+                    if tool_name == "get_transaction_history":
+                        tool_output = get_transaction_history.invoke(tool_args)
+                    elif tool_name == "get_current_balance":
+                        tool_output = get_current_balance.invoke(tool_args)
+                    elif tool_name == "get_profile_details":
+                        tool_output = get_profile_details.invoke(tool_args)
             else:
                 return "Unknown tool requested."
 

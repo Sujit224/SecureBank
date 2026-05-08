@@ -6,6 +6,8 @@ import Overview from '../components/dashboard/Overview';
 import TransferForm from '../components/dashboard/TransferForm';
 import DepositForm from '../components/dashboard/DepositForm';
 import TransactionHistory from '../components/dashboard/TransactionHistory';
+import CashFlowChart from '../components/dashboard/CashFlowChart';
+import CategoryMonthlyPieCharts from '../components/dashboard/CategoryMonthlyPieCharts';
 
 import ChatBot from '../components/ChatBot';
 import './Dashboard.css';
@@ -62,12 +64,14 @@ const UserDashboard = () => {
              {activeTab === 'deposit' && 'Deposit Funds'}
              {activeTab === 'transfer' && 'Transfer Funds'}
              {activeTab === 'history' && 'Transaction History'}
+             {activeTab === 'analytics' && 'Cash Flow Analytics'}
            </h1>
            <p className="page-subtitle">
              {activeTab === 'dashboard' && 'Here is what’s happening with your account today.'}
              {activeTab === 'deposit' && 'Add funds to your account securely.'}
              {activeTab === 'transfer' && 'Securely send money to friends and family.'}
              {activeTab === 'history' && 'View your past transactions.'}
+             {activeTab === 'analytics' && 'Monitor your income and spending behaviour.'}
            </p>
         </div>
 
@@ -76,6 +80,12 @@ const UserDashboard = () => {
         {activeTab === 'deposit' && <DepositForm accountNumber={accountNumber} onDepositSuccess={fetchUserData} />}
         {activeTab === 'transfer' && <TransferForm accountNumber={accountNumber} onTransferSuccess={fetchUserData} />}
         {activeTab === 'history' && <TransactionHistory accountNumber={accountNumber} />}
+        {activeTab === 'analytics' && (
+          <div className="dashboard-overview animate-fade" style={{ display: 'flex', gap: '20px', flexDirection: 'column' }}>
+             <CashFlowChart accountNumber={accountNumber} />
+             <CategoryMonthlyPieCharts accountNumber={accountNumber} username={user?.username} />
+          </div>
+        )}
       </div>
 
       {/* ChatBot Widget */}

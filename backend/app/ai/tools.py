@@ -99,20 +99,17 @@ def get_transaction_history(
             query = query.filter(Transaction.timestamp < end_dt)
 
 
-        results = query.order_by(Transaction.timestamp.desc()).all()
+        # Database-level filtering to prevent Denial of Service (loading all history into RAM)
+        query = query.filter(
+            or_(
+                func.lower(func.replace(Transaction.sender_account, ' ', '')) == target_acc,
+                func.lower(func.replace(Transaction.receiver_account, ' ', '')) == target_acc
+            )
+        )
 
+        results = query.order_by(Transaction.timestamp.desc()).limit(limit).all()
 
-        filtered_results = []
-
-        for tx in results:
-            sender = clean(tx.sender_account)
-            receiver = clean(tx.receiver_account)
-
-            if sender == target_acc or receiver == target_acc:
-                filtered_results.append(tx)
-
-        filtered_results = filtered_results[:limit]
-
+        filtered_results = results # Already filtered by database
 
         if not filtered_results:
             return json.dumps({

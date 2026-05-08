@@ -1,4 +1,4 @@
 # Backend environment and cache ignores
 .env
-__pycache__/
+**/__pycache__
 *.pyc

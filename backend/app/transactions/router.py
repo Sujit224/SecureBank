@@ -7,6 +7,49 @@ from app.database import get_db
 from app.schemas import DepositRequest, TransferRequest
 from sqlalchemy.orm import Session
 from datetime import datetime, timezone
+import os
+from langchain_groq import ChatGroq
+
+def classify_transaction(description: str, display_type: str) -> str:
+    desc = description.lower() if description else ""
+    
+    if display_type in ["DEPOSIT", "RECEIVED"]:
+        return "Income"
+    
+    if any(keyword in desc for keyword in ["amazon", "flipkart", "myntra", "shopping", "clothes", "mall", "store"]):
+        return "Shopping"
+    if any(keyword in desc for keyword in ["zomato", "swiggy", "food", "lunch", "dinner", "breakfast", "cafe", "restaurant", "mcdonalds", "dominos", "kfc"]):
+        return "Food & Dining"
+    if any(keyword in desc for keyword in ["movie", "recreation", "netflix", "spotify", "game", "steam", "psn", "theater"]):
+        return "Recreation"
+    if any(keyword in desc for keyword in ["uber", "ola", "rapido", "transport", "bus", "train", "flight", "ticket", "petrol", "fuel"]):
+        return "Transport"
+    if any(keyword in desc for keyword in ["electricity", "water", "rent", "emi", "loan", "bill", "recharge", "wifi", "internet"]):
+        return "Bills & Utilities"
+    if any(keyword in desc for keyword in ["grocery", "milk", "vegetables", "daily", "supermarket", "mart"]):
+        return "Daily Expense"
+    
+    # Fallback to LLM
+    try:
+        api_key = os.getenv("GROQ_API_KEY")
+        if api_key:
+            llm = ChatGroq(
+                model="llama-3.1-8b-instant",
+                temperature=0,
+                api_key=api_key,
+                max_tokens=15
+            )
+            prompt = f"Classify this transaction description into exactly ONE of these categories: Shopping, Food & Dining, Recreation, Transport, Bills & Utilities, Daily Expense, Others.\nDescription: '{description}'\nOutput ONLY the category name."
+            response = llm.invoke(prompt)
+            cat = response.content.strip()
+            allowed = ["Shopping", "Food & Dining", "Recreation", "Transport", "Bills & Utilities", "Daily Expense", "Others"]
+            for a in allowed:
+                if a.lower() in cat.lower():
+                    return a
+    except Exception as e:
+        print("LLM Classification Error:", e)
+
+    return "Others"
 
 router = APIRouter(prefix="/transactions",tags = ["Transactions"])
 
@@ -39,7 +82,8 @@ def deposit_money(
         description = deposit_request.description,
         status = "SUCCESS",
         timestamp = datetime.now(timezone.utc),
-        receiver_balance = account.balance
+        receiver_balance = account.balance,
+        category = classify_transaction(deposit_request.description, "DEPOSIT")
     )
 
     db.add(transaction)
@@ -99,7 +143,8 @@ def transfer_money(
         
         
         sender_balance = sender_account.balance,
-        receiver_balance = reciever_account.balance
+        receiver_balance = reciever_account.balance,
+        category = classify_transaction(transfer_request.description, "SENT")
     )
 
     db.add(transaction)
@@ -173,6 +218,7 @@ def transaction_history(
                 description=log.description,
                 status=log.status,
                 timestamp=log.timestamp,                
+                category=log.category or classify_transaction(log.description, display_type)
             )
         )
 

@@ -55,3 +55,4 @@ class Transaction(Base):
 
     sender_balance = Column(Float, default=0.0)
     receiver_balance = Column(Float, default=0.0)
+    category = Column(String(50), default="Others")
