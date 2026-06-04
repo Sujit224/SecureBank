@@ -6,7 +6,8 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer
+  ResponsiveContainer,
+  Legend
 } from 'recharts';
 import API from '../../api/axios';
 
@@ -106,8 +107,9 @@ const CashFlowChart = ({ accountNumber }) => {
             tick={{ fill: '#888', fontSize: 12 }} 
           />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
-          <Bar dataKey="income" fill="#65b736" radius={[2, 2, 0, 0]} barSize={40} />
-          <Bar dataKey="spending" fill="#313131" radius={[2, 2, 0, 0]} barSize={40} />
+          <Legend verticalAlign="top" align="right" iconType="circle" wrapperStyle={{ paddingBottom: '20px' }} />
+          <Bar dataKey="income" name="Income" fill="#65b736" radius={[2, 2, 0, 0]} barSize={40} />
+          <Bar dataKey="spending" name="Spending" fill="#313131" radius={[2, 2, 0, 0]} barSize={40} />
         </BarChart>
       </ResponsiveContainer>
     </div>
