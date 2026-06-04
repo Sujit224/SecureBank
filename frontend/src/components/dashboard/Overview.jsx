@@ -62,7 +62,7 @@ const Overview = ({ user, account }) => {
                <Calendar size={24} />
             </div>
             <div>
-               <p className="stat-label">Joined</p>
+               <p className="stat-label">Account Open Date</p>
                <p className="stat-value">{new Date(user.created_at).toLocaleDateString()}</p>
             </div>
          </div>
