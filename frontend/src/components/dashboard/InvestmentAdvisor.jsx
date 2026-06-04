@@ -331,13 +331,36 @@ const InvestmentAdvisor = () => {
     projMonths
   );
 
-  // Bar chart: investable surplus allocation across top 4 plans
-  const topPlans = [...recommendations.personalized_recommendations]
-    .sort((a, b) => b.suggested_amount - a.suggested_amount)
-    .slice(0, 5);
+  // Normalize proposed suggested amounts to match the investable_surplus exactly
+  const rawPlans = recommendations.personalized_recommendations || [];
+  const totalSuggested = rawPlans.reduce((sum, p) => sum + p.suggested_amount, 0);
+  const targetSurplus = recommendations.investable_surplus;
+  
+  let normalizedPlans = [];
+  if (totalSuggested > 0 && targetSurplus > 0) {
+    let runningSum = 0;
+    normalizedPlans = rawPlans.map((p, idx) => {
+      const share = (p.suggested_amount / totalSuggested) * targetSurplus;
+      // Round to nearest Rs. 100 to look natural
+      let adjusted = Math.round(share / 100) * 100;
+      
+      // Make sure the last item absorbs any rounding remainders to match targetSurplus exactly
+      if (idx === rawPlans.length - 1) {
+        adjusted = targetSurplus - runningSum;
+      } else {
+        runningSum += adjusted;
+      }
+      return { ...p, suggested_amount: adjusted };
+    });
+  } else {
+    normalizedPlans = rawPlans;
+  }
 
-  const allocData = topPlans.map(p => ({
-    name: p.plan_name.length > 18 ? p.plan_name.slice(0, 18) + '…' : p.plan_name,
+  // Sort normalized plans largest to smallest
+  const sortedPlans = [...normalizedPlans].sort((a, b) => b.suggested_amount - a.suggested_amount);
+
+  const allocData = sortedPlans.map(p => ({
+    name: p.plan_name.length > 22 ? p.plan_name.slice(0, 22) + '…' : p.plan_name,
     amount: p.suggested_amount,
     color: TYPE_META[p.type]?.color || '#6366f1',
   }));
@@ -539,7 +562,7 @@ const InvestmentAdvisor = () => {
           Tailored to your age ({user_context.age}), {user_context.marital_status} status, {user_context.income_range} income & spending behaviour.
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {recommendations.personalized_recommendations.map((plan, i) => (
+          {sortedPlans.map((plan, i) => (
             <RecoCard key={i} plan={plan} index={i} />
           ))}
         </div>
