@@ -74,20 +74,38 @@ const fmt = (n) =>
   `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
 
 // ── Projection chart data ─────────────────────────────────────────────────────
-function buildProjection(principal, monthlyAdd, rates, years = 15) {
+function buildProjection(principal, monthlyAdd, rates, months = 36) {
   const data = [];
-  for (let y = 0; y <= years; y++) {
-    const row = { year: y === 0 ? 'Now' : `${y}Y` };
-    rates.forEach(({ label, rate }) => {
+  let step = 1;
+  if (months === 24) step = 2;
+  if (months === 36) step = 3;
+
+  for (let m = 0; m <= months; m += (m === 0 ? 1 : step)) {
+    if (m > months) m = months;
+    
+    let label = '';
+    if (m === 0) {
+      label = 'Now';
+    } else if (m < 12) {
+      label = `${m}M`;
+    } else {
+      const y = m / 12;
+      label = Number.isInteger(y) ? `${y}Y` : `${(m / 12).toFixed(1)}Y`;
+    }
+    
+    const row = { year: label };
+    rates.forEach(({ label: rateLabel, rate }) => {
       const r = rate / 100;
-      // Compound annually with monthly additions
-      let fv = principal * Math.pow(1 + r, y);
-      if (y > 0) {
-        fv += monthlyAdd * 12 * ((Math.pow(1 + r, y) - 1) / r);
+      const monthlyRate = r / 12;
+      let fv = principal * Math.pow(1 + monthlyRate, m);
+      if (m > 0) {
+        fv += monthlyAdd * ((Math.pow(1 + monthlyRate, m) - 1) / monthlyRate);
       }
-      row[label] = Math.round(fv);
+      row[rateLabel] = Math.round(fv);
     });
     data.push(row);
+    
+    if (m === months) break;
   }
   return data;
 }
@@ -253,7 +271,7 @@ const InvestmentAdvisor = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [projYears, setProjYears] = useState(10);
+  const [projMonths, setProjMonths] = useState(36);
 
   useEffect(() => {
     const fetch = async () => {
@@ -299,18 +317,18 @@ const InvestmentAdvisor = () => {
   const { user_context, recommendations } = data;
   const riskMeta = RISK_META[recommendations.risk_profile] || RISK_META.Moderate;
 
-  // Build projection rates based on recommendations
+  // Build projection rates based on recommendations (ordered largest to smallest for overlay rendering)
   const projRates = [
-    { label: 'SecureBank FD (8.2%)',     rate: 8.2,  stroke: '#CCFF00' },
-    { label: 'Mutual Fund (~14.5%)',     rate: 14.5, stroke: '#f59e0b' },
-    { label: 'Savings Account (3.5%)',   rate: 3.5,  stroke: '#94a3b8' },
+    { label: 'Mutual Fund (~14.5%)',     rate: 14.5, stroke: '#f97316' }, // Vibrant Orange
+    { label: 'SecureBank FD (8.2%)',     rate: 8.2,  stroke: '#8b5cf6' }, // Vibrant Violet
+    { label: 'Savings Account (3.5%)',   rate: 3.5,  stroke: '#0ea5e9' }, // Vibrant Sky Blue
   ];
 
   const projData = buildProjection(
     user_context.total_balance,
     recommendations.investable_surplus,
     projRates,
-    projYears
+    projMonths
   );
 
   // Bar chart: investable surplus allocation across top 4 plans
@@ -409,23 +427,29 @@ const InvestmentAdvisor = () => {
             </p>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            {[5, 10, 15, 20].map(y => (
+            {[
+              { label: '3M', value: 3 },
+              { label: '6M', value: 6 },
+              { label: '1Y', value: 12 },
+              { label: '2Y', value: 24 },
+              { label: '3Y', value: 36 }
+            ].map(item => (
               <button
-                key={y}
-                onClick={() => setProjYears(y)}
+                key={item.value}
+                onClick={() => setProjMonths(item.value)}
                 style={{
                   padding: '6px 14px',
                   borderRadius: 8,
-                  border: `1px solid ${projYears === y ? 'var(--color-accent)' : 'var(--color-border)'}`,
-                  background: projYears === y ? 'var(--color-accent)' : 'transparent',
-                  color: projYears === y ? '#000' : 'var(--color-text-secondary)',
+                  border: `1px solid ${projMonths === item.value ? 'var(--color-accent)' : 'var(--color-border)'}`,
+                  background: projMonths === item.value ? 'var(--color-accent)' : 'transparent',
+                  color: projMonths === item.value ? '#000' : 'var(--color-text-secondary)',
                   fontWeight: 600,
                   fontSize: 13,
                   cursor: 'pointer',
                   transition: 'all 0.15s',
                 }}
               >
-                {y}Y
+                {item.label}
               </button>
             ))}
           </div>
@@ -476,7 +500,9 @@ const InvestmentAdvisor = () => {
                 <p style={{ fontWeight: 800, fontSize: 18, fontFamily: 'var(--font-display)', color: r.stroke }}>
                   {fmt(last?.[r.label] || 0)}
                 </p>
-                <p style={{ color: 'var(--color-text-secondary)', fontSize: 11 }}>after {projYears} years</p>
+                <p style={{ color: 'var(--color-text-secondary)', fontSize: 11 }}>
+                  after {projMonths >= 12 ? `${projMonths / 12} year${projMonths / 12 > 1 ? 's' : ''}` : `${projMonths} months`}
+                </p>
               </div>
             );
           })}
