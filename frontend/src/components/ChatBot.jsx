@@ -1,10 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Loader2, Bot } from 'lucide-react';
+import { MessageSquare, X, Send, Loader2, Bot, Maximize2, Minimize2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import API from '../api/axios';
 import './ChatBot.css'; 
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -71,6 +74,8 @@ const ChatBot = () => {
     if (!isOpen) {
       setShowWelcome(false);
       sessionStorage.setItem('aiWelcomeClosed', 'true');
+    } else {
+      setIsFullScreen(false);
     }
   };
 
@@ -209,7 +214,7 @@ const ChatBot = () => {
       </div>
 
       {/* Chat Window */}
-      <div className={`chatbot-window ${isOpen ? 'open' : ''}`}>
+      <div className={`chatbot-window ${isOpen ? 'open' : ''} ${isFullScreen ? 'full-screen' : ''}`}>
         <div className="chatbot-header">
           <div className="flex items-center gap-2">
             <div className="bot-avatar">
@@ -217,14 +222,25 @@ const ChatBot = () => {
             </div>
             <span>AI Assistant</span>
           </div>
-          <button onClick={toggleChat} className="close-btn"><X size={18} /></button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button onClick={() => setIsFullScreen(!isFullScreen)} className="close-btn" title={isFullScreen ? "Minimize" : "Maximize"}>
+              {isFullScreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+            </button>
+            <button onClick={toggleChat} className="close-btn"><X size={18} /></button>
+          </div>
         </div>
 
         <div className="chatbot-messages">
           {messages.map((msg, idx) => (
             <div key={idx} className={`message-wrapper ${msg.isBot ? 'bot-wrapper' : 'user-wrapper'}`}>
               <div className={`message ${msg.isBot ? 'bot' : 'user'}`}>
-                {msg.text}
+                {msg.isBot ? (
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {msg.text}
+                  </ReactMarkdown>
+                ) : (
+                  msg.text
+                )}
               </div>
               {msg.options && (
                 <div className="message-options">
