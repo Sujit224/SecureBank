@@ -141,17 +141,26 @@ const CategoryMonthlyPieCharts = ({ accountNumber, isProfile = false, username }
                   <div style={{ flex: '1 1 250px' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                       <tbody>
-                        {[...monthRecord.data].sort((a,b) => b.amount - a.amount).slice(0, 5).map((item, i) => (
+                        {[...monthRecord.data].sort((a,b) => b.amount - a.amount).map((item, i) => (
                           <tr key={i} style={{ borderBottom: '1px solid var(--color-border)' }}>
                             <td style={{ padding: '10px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
                               <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: COLORS[item.category] || COLORS['Others'] }}></div>
                               <span style={{ color: 'var(--color-text-primary)', fontWeight: '500' }}>{item.category}</span>
                             </td>
                             <td style={{ padding: '10px 0', textAlign: 'right', fontWeight: '700', color: 'var(--color-text-primary)' }}>
-                              ₹{item.amount.toLocaleString('en-IN')}
+                              ₹{item.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </td>
                           </tr>
                         ))}
+                        {/* Total Spending Row */}
+                        <tr style={{ borderTop: '2px solid var(--color-text-primary)' }}>
+                          <td style={{ padding: '12px 0', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold' }}>
+                            <span style={{ color: 'var(--color-text-primary)' }}>Total Spending</span>
+                          </td>
+                          <td style={{ padding: '12px 0', textAlign: 'right', fontWeight: '800', color: 'var(--color-text-primary)', fontSize: '15px' }}>
+                            ₹{monthRecord.data.reduce((sum, item) => sum + item.amount, 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
