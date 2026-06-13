@@ -23,8 +23,9 @@ SecureBank is a modern, full-stack banking application that combines traditional
 
 ###  Intelligent AI Assistant
 - **Integrated Chatbot**: Ask questions about your bank details, check your balance, or inquire about past transactions.
+- **Voice Input**: Utilize real-time speech recognition and audio transcription to talk directly to the AI assistant using your microphone.
 - **Context-Aware**: The agent intelligently asks for account selection when you query account-specific data, but answers general profile questions instantly.
-- **Powered by Langchain & Groq**: Fast and accurate natural language processing acting as a virtual teller.
+- **Powered by Langchain & Groq**: Fast and accurate natural language processing acting as a virtual teller (including `whisper-large-v3` for audio transcription).
 
 ---
 
