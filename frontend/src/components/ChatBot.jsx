@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Loader2, Bot, Maximize2, Minimize2 } from 'lucide-react';
+import { MessageSquare, X, Send, Loader2, Bot, Maximize2, Minimize2, Mic, Square } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import API from '../api/axios';
@@ -13,6 +13,10 @@ const ChatBot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   
+  // Voice feature states
+  const [isRecording, setIsRecording] = useState(false);
+  const recognitionRef = useRef(null);
+  
   // New state for account selection
   const [user, setUser] = useState(null);
   const [selectedAccount, setSelectedAccount] = useState(null);
@@ -20,6 +24,72 @@ const ChatBot = () => {
   const [pendingQuery, setPendingQuery] = useState(null);
   
   const messagesEndRef = useRef(null);
+
+  const startRecording = () => {
+    if (isLoading || isRecording) return;
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Real-time speech recognition is not supported in this browser. Please try Google Chrome or Edge.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+
+    recognition.onstart = () => {
+      setIsRecording(true);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error", event.error);
+      if (event.error !== 'no-speech') {
+        setIsRecording(false);
+      }
+    };
+
+    recognition.onend = () => {
+      setIsRecording(false);
+    };
+
+    recognition.onresult = (event) => {
+      let interimTranscript = '';
+      let finalTranscript = '';
+
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+        } else {
+          interimTranscript += event.results[i][0].transcript;
+        }
+      }
+
+      const currentText = finalTranscript || interimTranscript;
+      if (currentText) {
+        setInput(currentText);
+      }
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+  };
+
+  const stopRecording = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, []);
 
   // Fetch user details to get accounts and name
   useEffect(() => {
@@ -273,12 +343,21 @@ const ChatBot = () => {
         <form onSubmit={handleSend} className="chatbot-input">
           <input 
             type="text" 
-            placeholder="Ask about your finances..." 
+            placeholder={isRecording ? "Listening... Speak now..." : "Ask about your finances..."} 
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            disabled={isLoading}
+            disabled={isLoading || isRecording}
           />
-          <button type="submit" disabled={isLoading || !input.trim()}>
+          <button 
+            type="button" 
+            className={`mic-btn ${isRecording ? 'recording' : ''}`}
+            onClick={isRecording ? stopRecording : startRecording}
+            disabled={isLoading}
+            title={isRecording ? "Stop recording" : "Record voice input"}
+          >
+            {isRecording ? <Square size={16} /> : <Mic size={16} />}
+          </button>
+          <button type="submit" disabled={isLoading || isRecording || !input.trim()}>
             {isLoading ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
           </button>
         </form>

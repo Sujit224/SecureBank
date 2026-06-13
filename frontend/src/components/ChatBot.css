@@ -360,3 +360,32 @@
 .message.bot li, .message.user li {
     margin-bottom: 4px;
 }
+
+/* Mic Button Styling */
+.mic-btn {
+    background: transparent !important;
+    border: 1px solid var(--color-border) !important;
+    color: var(--color-text-primary) !important;
+    transition: all 0.3s ease;
+}
+
+.mic-btn:hover {
+    background: var(--color-bg-secondary) !important;
+    border-color: var(--color-text-primary) !important;
+}
+
+.mic-btn.recording {
+    background: #ef4444 !important;
+    border-color: #ef4444 !important;
+    color: white !important;
+    animation: pulse-recording 1.5s infinite alternate;
+}
+
+@keyframes pulse-recording {
+    0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+    }
+}
